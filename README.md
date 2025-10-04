@@ -1,6 +1,6 @@
 # GROUP 888 ONLINE LIBRARRY MANAGEMENT
 
-This is GROUP 888, our title is Online Librarry Management
+This is GROUP 888, our title is Online Library Management
 
 ## Group Member
 - [Boon Shi Ying](https://github.com/hazzelying0803)
