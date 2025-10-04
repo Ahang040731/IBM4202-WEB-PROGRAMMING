@@ -7,4 +7,4 @@ This is GROUP 888, our title is Online Library Management
 - [Chiew Yong Jie](https://github.com/Jamie-chew)
 - [Dwalton Voo Jia Leung](https://github.com/ShirA-99)
 - [Lian Yi Heng](https://github.com/Ahang040731)
-- [Ooi Xing Hong]
+- [Ooi Xing Hong](https://github.com/Kagura5201314)
