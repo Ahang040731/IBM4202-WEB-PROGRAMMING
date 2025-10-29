@@ -2,6 +2,10 @@
 
 This is GROUP 888, our title is Online Library Management
 
+## Table of Content
+Link to the sample section: [Group Member](#Group-Member).
+
+
 ## Group Member
 - [Boon Shi Ying](https://github.com/hazzelying0803)
 - [Chiew Yong Jie](https://github.com/Jamie-chew)
