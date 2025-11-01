@@ -5,6 +5,7 @@ This is GROUP 888, our title is Online Library Management
 ## Table of Content
 [Group Member](#group-member)  
 [Require](#require)  
+[Database](#database)  
 [Installation](#installation)  
 [Pre-Launch Setup](#pre-launch-setup)  
 [How To Launch](#how-to-launch)
@@ -20,8 +21,22 @@ This is GROUP 888, our title is Online Library Management
 - PHP 8.4.13
 - Node.js 24.11.0
 
+## Database
+- SSMS
+If you are decided to use SSMS as the database you will need to install two extension for `php 8.4` which are
+[sqlsrv.dll 5.12](https://pecl.php.net/package/sqlsrv) and
+[pdo_sqlsrv.dll 5.12](https://pecl.php.net/package/pdo_sqlsrv). These file should be place under `php/ext/..` path and add these code to ur `php.ini`.
+```
+extension=php_pdo_sqlsrv.dll
+extension=php_sqlsrv.dll
+```
+
+- MYSQL
+
 ## Installation
 - Laravel 12.x
+
+
 
 ## Pre-Launch Setup
 1. duplicate `.env.example` file and rename asn `.env`
@@ -29,5 +44,5 @@ This is GROUP 888, our title is Online Library Management
 
 ## How To Launch
 Before launch the web, ensure you are under the path of the project then run:
-    php artisan serve
+    > php artisan serve
 the web will be launch at port http://127.0.0.1:8000
