@@ -18,7 +18,18 @@ This is GROUP 888, our title is Online Library Management
 - [Ooi Xing Hong](https://github.com/Kagura5201314)
 
 ## Require
-- PHP 8.4.13
+### PHP 8.4.13
+If you download `PHP` from officel website, ensure you had add these code to your `php.ini`.
+```
+extension_dir = "ext"
+
+extension=curl
+extension=fileinfo
+extension=mbstring
+extension=openssl
+extension=zip
+```
+
 - Node.js 24.11.0
 
 ## Database
@@ -26,13 +37,25 @@ This is GROUP 888, our title is Online Library Management
 If you are decided to use __SQL Server Management Studio__ as the database, you will need to install two extension for `php 8.4`:
 - [sqlsrv.dll 5.12](https://pecl.php.net/package/sqlsrv) and
 - [pdo_sqlsrv.dll 5.12](https://pecl.php.net/package/pdo_sqlsrv)
-These file should be place under `php/ext/..` path and add these code to your `php.ini`.
+These file should be place under `php/ext/..` path and add these code to your `php.ini`:
 ```
 extension=php_pdo_sqlsrv.dll
 extension=php_sqlsrv.dll
 ```
 
 ### MYSQL
+For __MYSQL__, you will need to add these code to your `php.ini`:
+```
+extension=pdo_mysql
+extension=mysqli
+```
+
+### SQLite
+For __SQLite__, you will need to add these code to your `php.ini`:
+```
+extension=pdo_sqlite
+extension=sqlite3
+```
 
 ## Installation
 - Laravel 12.x
