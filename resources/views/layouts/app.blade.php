@@ -26,9 +26,10 @@
       </div>
 
       <div class="flex items-center gap-3">
-        <form action="{{ route('logout') ?? '#' }}" method="POST" class="hidden md:block">
+        <a class="font-semibold">Guest</a>
+        <form action="{{ route('login') ?? '#' }}" method="POST" class="hidden md:block">
           @csrf
-          <button class="px-3 py-1.5 rounded bg-gray-900 text-white hover:opacity-90">Logout</button>
+          <button class="px-3 py-1.5 rounded bg-gray-900 text-white hover:opacity-90">Login</button>
         </form>
       </div>
     </div>

@@ -6,10 +6,10 @@ Route::get('/', function () {
     return view('dashboard');
 });
 
-Route::post('/logout', function () {
+Route::post('/login', function () {
     // Just redirect for now
     return redirect('/');
-})->name('logout');
+})->name('login');
 
 Route::post('/dashboard', function () {
     // Just redirect for now
