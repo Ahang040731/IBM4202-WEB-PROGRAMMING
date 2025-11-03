@@ -22,7 +22,7 @@ class DatabaseSeeder extends Seeder
             'role' => 'admin',
         ]);
 
-        $userAccount = Account::create([
+        Account::create([
             'email' => 'user@library.com',
             'password' => Hash::make('user'), // hashed
             'role' => 'user',

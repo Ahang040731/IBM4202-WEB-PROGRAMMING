@@ -127,6 +127,64 @@ the web will be launch at port:
 ### Database  
 `..\app\Models\..`  
 This folder store all of the data of table as model. All of the data should use this method to store and call.  
+```
+class Example extends Model
+{
+    use HasFactory, SoftDeletes;
+
+    /**
+     * The table associated with the model.
+     */
+    protected $table = 'example_table';
+
+    /**
+     * The attributes that are mass assignable.
+     */
+    protected $fillable = [
+        'account_id',
+        'quantity',
+        'price',
+        'title',
+        'description',
+        'is_active',
+        'settings',
+        'publish_date',
+        'approved_at',
+    ];
+
+    /**
+     * The attributes that should be cast.
+     */
+    protected $casts = [
+        'is_active' => 'boolean',
+        'settings' => 'array',
+        'publish_date' => 'date',
+        'approved_at' => 'datetime',
+    ];
+
+    /**
+     * Relationships
+     */
+
+    // Each example belongs to one account
+    public function account()
+    {
+        return $this->belongsTo(Account::class);
+    }
+
+    // Example of a one-to-many relationship (if needed)
+    public function comments()
+    {
+        return $this->hasMany(Comment::class);
+    }
+
+    // Example of an accessor
+    public function getFormattedPriceAttribute()
+    {
+        return 'RM ' . number_format($this->price, 2);
+    }
+}
+```
 
 `..\database\factories\..`  
 This folder store all the method use to generate random data for database. Itself cannot write data into database, must use with seeders.  
@@ -136,9 +194,111 @@ This folder store all file that use to create database table that needed for thi
 ```
 php artisan make:migration create_example_table
 ```
+```
+Schema::create('example_table', function (Blueprint $table) {
+    /** 🔑 Primary keys & Foreign keys */
+    $table->id(); // Auto-incrementing BIGINT (primary key)
+    $table->foreignId('account_id')->constrained('accounts')->cascadeOnDelete(); // Foreign key reference
+
+    /** 🧩 Integer & Numeric types */
+    $table->tinyInteger('tiny_number')->default(0);      // 1-byte integer (-128 to 127)
+    $table->smallInteger('small_number')->unsigned();    // 2-byte integer (0–65535)
+    $table->integer('quantity')->default(1);             // 4-byte integer (-2B to 2B)
+    $table->bigInteger('views')->unsigned();             // 8-byte integer (0–18 quintillion)
+    $table->decimal('price', 8, 2)->default(0.00);       // Decimal with precision (8 digits total, 2 after decimal)
+    $table->float('rating', 3, 2)->nullable();           // Float (less precise than decimal)
+    $table->double('balance', 10, 2)->nullable();        // Double precision float
+
+    /** 🔤 String & Text types */
+    $table->string('title', 255);                        // VARCHAR(255)
+    $table->char('code', 10);                            // Fixed-length CHAR(10)
+    $table->text('description')->nullable();             // TEXT (up to 65,535 chars)
+    $table->mediumText('summary')->nullable();           // MEDIUMTEXT (up to 16 million chars)
+    $table->longText('content')->nullable();             // LONGTEXT (up to 4 billion chars)
+    $table->json('settings')->nullable();                // JSON column for structured data
+
+    /** 🗓️ Date & Time types */
+    $table->date('publish_date')->nullable();            // YYYY-MM-DD
+    $table->datetime('publish_datetime')->nullable();    // YYYY-MM-DD HH:MM:SS
+    $table->time('publish_time')->nullable();            // HH:MM:SS
+    $table->timestamp('approved_at')->nullable();        // DATETIME with timezone support
+    $table->year('published_year')->nullable();          // 4-digit year
+
+    /** ⚙️ Boolean & Enum types */
+    $table->boolean('is_active')->default(true);         // Boolean (tinyint 0 or 1)
+    $table->enum('status', ['pending', 'approved', 'rejected'])->default('pending'); // ENUM constraint
+
+    /** 🧭 Other useful column types */
+    $table->uuid('uuid')->unique();                      // UUID (36-character unique ID)
+    $table->binary('file_data')->nullable();             // BLOB (binary data)
+    $table->ipAddress('last_login_ip')->nullable();      // Stores IP addresses (IPv4/IPv6)
+    $table->macAddress('device_mac')->nullable();        // MAC address (e.g., 00:1B:44:11:3A:B7)
+    $table->rememberToken();                             // Adds nullable VARCHAR(100) for “remember me” login
+
+    /** 🕒 Auto timestamps & soft deletes */
+    $table->timestamps();                                // created_at & updated_at
+    $table->softDeletes();                               // deleted_at (for soft delete feature)
+});
+```
 
 `..\database\seeders\..`  
 This folder store all file that use to insert pre-defined data into database. It can insert multiple row of data to different table in one time to make the process automatic.  
+
+If you want to add multiple test data you need to use the Model that use for that table for example:
+```
+use App\Models\Example;
+```
+```
+// ✅ Option 1: Insert using Eloquent model
+    Example::create([
+        'account_id' => 1,
+        'quantity' => 10,
+        'price' => 49.99,
+        'title' => 'Sample Example Record',
+        'description' => 'This is a sample record created using a seeder.',
+        'is_active' => true,
+        'settings' => json_encode(['theme' => 'dark', 'mode' => 'auto']),
+        'publish_date' => Carbon::now()->subDays(5),
+        'approved_at' => Carbon::now(),
+    ]);
+
+// ✅ Option 2: Insert multiple records using DB facade
+    DB::table('example_table')->insert([
+        [
+            'account_id' => 1,
+            'quantity' => 5,
+            'price' => 25.00,
+            'title' => 'Another Record',
+            'description' => 'Inserted using DB::table',
+            'is_active' => true,
+            'settings' => json_encode(['mode' => 'manual']),
+            'publish_date' => Carbon::now(),
+            'approved_at' => Carbon::now(),
+            'created_at' => now(),
+            'updated_at' => now(),
+        ],
+        [
+            'account_id' => 2,
+            'quantity' => 5,
+            'price' => 25.00,
+            'title' => 'Another Record',
+            'description' => 'Inserted using DB::table',
+            'is_active' => true,
+            'settings' => json_encode(['mode' => 'manual']),
+            'publish_date' => Carbon::now(),
+            'approved_at' => Carbon::now(),
+            'created_at' => now(),
+            'updated_at' => now(),
+        ]
+    ]);
+```
+
+If you have modify database's table or data you need to clear current database and recreate by running this code:
+```
+php artisan migrate:fresh --seed
+```
+
+
 
 ### Frontend  
 `..\resources\css\..`  
