@@ -7,6 +7,7 @@
   @vite(['resources/css/app.css','resources/js/app.js'])
   {{-- Alpine for simple interactivity (no install needed) --}}
   <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </head>
 <body class="bg-gray-50 text-gray-900" x-data="{ sidebarOpen: false }">
 

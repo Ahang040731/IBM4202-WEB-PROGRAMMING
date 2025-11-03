@@ -1,6 +1,5 @@
-# GROUP 888 ONLINE LIBRARRY MANAGEMENT
-
-This is GROUP 888, our title is Online Library Management
+# GROUP 888 ONLINE LIBRARY MANAGEMENT
+This is __GROUP 888__, our title is __Online Library Management__
 
 ## Table of Content
 [Group Member](#group-member)  
