@@ -3,6 +3,13 @@
 @section('title', 'Dashboard')
 
 @section('content')
+
+  <!-- I DONT KNOW WHY THIS SHIT CALL DASHBOARD YOUR TASK SHOULD BE USER SIDE HOMEPAGE by heng-->
+  <!-- DASHBOARD should be done by yongjie Admin side -->
+
+
+
+
   <h1 class="text-2xl font-bold mb-4">Dashboard</h1>
 
   <div class="grid md:grid-cols-3 gap-4">

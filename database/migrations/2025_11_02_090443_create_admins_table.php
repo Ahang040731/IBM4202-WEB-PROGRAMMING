@@ -11,15 +11,11 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('users', function (Blueprint $table) {
+        Schema::create('admins', function (Blueprint $table) {
             $table->id();
             $table->foreignId('account_id')->constrained('accounts')->cascadeOnDelete();
             $table->string('username');
             $table->string('phone')->nullable();
-            $table->boolean('is_active')->default(true);
-            $table->decimal('credit', 10, 2)->default(0);
-            $table->string('photo')->nullable();
-            $table->text('address')->nullable();
             
             $table->timestamp('created_at')->useCurrent();
             $table->timestamp('updated_at')->nullable()->useCurrentOnUpdate();
@@ -31,6 +27,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('users');
+        Schema::dropIfExists('admins');
     }
 };

@@ -6,7 +6,11 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 
 class Account extends Authenticatable
 {
-    protected $fillable = ['email', 'password', 'role'];
+    protected $fillable = [
+        'email',
+        'password',
+        'role'
+    ];
 
     protected $hidden = ['password'];
 
@@ -20,5 +24,3 @@ class Account extends Authenticatable
         return $this->hasOne(Admin::class);
     }
 }
-
-?>

@@ -39,8 +39,8 @@
     <!-- Sidebar (desktop) -->
     <aside class="hidden md:block w-64 border-r min-h-[calc(100vh-56px)] bg-white">
       <nav class="p-3 space-y-1">
-        <a href="{{ route('dashboard') ?? url('/') }}"
-           class="block px-3 py-2 rounded hover:bg-gray-100 {{ request()->is('/') ? 'bg-gray-100 font-medium' : '' }}">🏠 Dashboard</a>
+        <a href="{{ url('/') }}"
+           class="block px-3 py-2 rounded hover:bg-gray-100">🏠 Dashboard</a>
         <a href="{{ route('login') ?? '#' }}"
            class="">test login</a>
         {{-- <a href="{{ route('books.index') ?? '#' }}"
