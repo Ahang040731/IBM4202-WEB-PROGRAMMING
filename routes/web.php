@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\FavouriteController;
 use App\Http\Controllers\BookController;
+use App\Http\Controllers\BorrowHistoryController;
 
 Route::get('/', function () {
     return view('client.homepage.index');
@@ -56,4 +57,6 @@ Route::get('/profile', [DashboardController::class, 'showProfile'])->name('profi
 Route::get('/profile/edit', [DashboardController::class, 'editProfile'])->name('profile.edit');
 Route::post('/logout', [DashboardController::class, 'logout'])->name('logout');
 
+Route::get('/client/borrow-history', [BorrowHistoryController::class, 'index'])
+    ->name('client.borrowhistory.index');;
 ?>

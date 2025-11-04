@@ -448,7 +448,7 @@
           <span class="badge">New</span>
         </a>
         
-        <a href="{{ route('borrowed.index') ?? '#' }}" 
+        <a href="{{ route('client.borrowhistory.index') ?? '#' }}" 
            class="nav-link"
            :class="{ 'active': currentPage.includes('borrowed') }">
           <span class="nav-icon">📚</span>
