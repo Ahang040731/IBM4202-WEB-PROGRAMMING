@@ -1,1046 +1,331 @@
 @extends('layouts.app')
 
-@section('title', 'Home Page')
+@section('title', 'Discover - Library Dashboard')
 
 @section('content')
-
-  <!-- I DONT KNOW WHY THIS SHIT CALL DASHBOARD YOUR TASK SHOULD BE USER SIDE HOMEPAGE by heng-->
-  <!-- DASHBOARD should be done by yongjie Admin side -->
-
-<div class="dashboard-container">
-    <!-- Hero Section with Search -->
-    <div class="hero-section">
-        <div class="hero-content">
-            <h1 class="hero-title animate-fade-in">Discover Your Next Great Read</h1>
-            <p class="hero-subtitle animate-fade-in-delay">Explore our collection of amazing books</p>
+<div class="space-y-8">
+    
+    {{-- Page Header --}}
+    <div class="flex items-center justify-between">
+        <div>
+            <h1 class="text-3xl font-bold text-gray-900">Discover</h1>
+            <p class="text-gray-600 mt-1">Explore our curated collection of books</p>
+        </div>
+        
+        {{-- Filters --}}
+        <div class="flex items-center space-x-3">
+            {{-- Category Filter --}}
+            <select class="px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white">
+                <option>All Categories</option>
+                @foreach($categories as $category)
+                    <option value="{{ $category }}">{{ $category }}</option>
+                @endforeach
+            </select>
             
-            <!-- Search Panel -->
-            <div class="search-panel animate-slide-up">
-                <form action="{{ route('dashboard') }}" method="GET" class="search-form">
-                    <div class="search-input-wrapper">
-                        <svg class="search-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
-                        </svg>
-                        <input 
-                            type="text" 
-                            name="search" 
-                            class="search-input" 
-                            placeholder="Search by title, author, or category..."
-                            value="{{ request('search') }}"
-                        >
-                    </div>
-                    
-                    <div class="filter-group">
-                        <select name="category" class="filter-select">
-                            <option value="">All Categories</option>
-                            <option value="Fiction" {{ request('category') == 'Fiction' ? 'selected' : '' }}>Fiction</option>
-                            <option value="Non-Fiction" {{ request('category') == 'Non-Fiction' ? 'selected' : '' }}>Non-Fiction</option>
-                            <option value="Science" {{ request('category') == 'Science' ? 'selected' : '' }}>Science</option>
-                            <option value="History" {{ request('category') == 'History' ? 'selected' : '' }}>History</option>
-                            <option value="Technology" {{ request('category') == 'Technology' ? 'selected' : '' }}>Technology</option>
-                            <option value="Biography" {{ request('category') == 'Biography' ? 'selected' : '' }}>Biography</option>
-                            <option value="Fantasy" {{ request('category') == 'Fantasy' ? 'selected' : '' }}>Fantasy</option>
-                            <option value="Mystery" {{ request('category') == 'Mystery' ? 'selected' : '' }}>Mystery</option>
-                        </select>
-                        
-                        <select name="sort" class="filter-select">
-                            <option value="newest" {{ request('sort') == 'newest' ? 'selected' : '' }}>Newest First</option>
-                            <option value="oldest" {{ request('sort') == 'oldest' ? 'selected' : '' }}>Oldest First</option>
-                            <option value="rating" {{ request('sort') == 'rating' ? 'selected' : '' }}>Highest Rated</option>
-                            <option value="title" {{ request('sort') == 'title' ? 'selected' : '' }}>Title A-Z</option>
-                        </select>
-                        
-                        <button type="submit" class="search-btn">
-                            <span>Search</span>
-                        </button>
-                    </div>
-                </form>
-            </div>
+            {{-- Search Button --}}
+            <button class="px-6 py-2 bg-gray-900 text-white rounded-lg hover:bg-gray-800 font-medium">
+                Search
+            </button>
         </div>
     </div>
-
-    <!-- Quick Stats -->
-    <div class="stats-container">
-        <div class="stat-card animate-scale-in" style="animation-delay: 0.1s">
-            <div class="stat-icon books">
-                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/>
+    
+    {{-- Book Recommendations Section --}}
+    <section class="fade-in" style="animation-delay: 0.2s">
+        <div class="flex items-center justify-between mb-6">
+            <h2 class="text-2xl font-bold text-gray-900">Book Recommendation</h2>
+            <a href="{{ route('books.recommendations') }}" class="text-blue-600 hover:text-blue-700 font-medium text-sm flex items-center space-x-1">
+                <span>View All</span>
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
                 </svg>
-            </div>
-            <div class="stat-info">
-                <h3 class="stat-number">{{ $totalBooks ?? 0 }}</h3>
-                <p class="stat-label">Total Books</p>
-            </div>
+            </a>
         </div>
-
-        <div class="stat-card animate-scale-in" style="animation-delay: 0.2s">
-            <div class="stat-icon borrowed">
-                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
-                </svg>
-            </div>
-            <div class="stat-info">
-                <h3 class="stat-number">{{ $borrowedCount ?? 0 }}</h3>
-                <p class="stat-label">Currently Borrowed</p>
-            </div>
-        </div>
-
-        <div class="stat-card animate-scale-in" style="animation-delay: 0.3s">
-            <div class="stat-icon favorites">
-                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/>
-                </svg>
-            </div>
-            <div class="stat-info">
-                <h3 class="stat-number">{{ $favoritesCount ?? 0 }}</h3>
-                <p class="stat-label">Favorites</p>
-            </div>
-        </div>
-
-        <div class="stat-card animate-scale-in" style="animation-delay: 0.4s">
-            <div class="stat-icon credit">
-                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
-                </svg>
-            </div>
-            <div class="stat-info">
-                <h3 class="stat-number">RM {{ number_format(auth()->user()->credit ?? 0, 2) }}</h3>
-                <p class="stat-label">Your Credit</p>
-            </div>
-        </div>
-    </div>
-
-    <!-- Books Grid -->
-    <div class="books-section">
-        <div class="section-header">
-            <h2 class="section-title">Available Books</h2>
-            <p class="section-subtitle">{{ isset($books) ? $books->total() : 0 }} books found</p>
-        </div>
-
-        @if(isset($books) && $books->count() > 0)
-        <div class="books-grid">
-            @foreach($books as $index => $book)
-            <div class="book-card animate-fade-in-up" style="animation-delay: {{ ($index % 12) * 0.05 }}s">
-                <div class="book-image-wrapper">
-                    @if($book->photo)
-                        <img src="{{ asset('storage/' . $book->photo) }}" alt="{{ $book->book_name }}" class="book-image">
-                    @else
-                        <div class="book-placeholder">
-                            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/>
-                            </svg>
-                        </div>
-                    @endif
-                    
-                    <!-- Book Status Badge -->
-                    <div class="book-badge {{ $book->available_copies > 0 ? 'available' : 'unavailable' }}">
-                        {{ $book->available_copies > 0 ? 'Available' : 'Unavailable' }}
-                    </div>
-                    
-                    <!-- Favorite Button -->
-                    <form action="{{ route('favorites.toggle', $book->id) }}" method="POST" class="favorite-form">
-                        @csrf
-                        <button type="submit" class="favorite-btn {{ $book->isFavorited ?? false ? 'active' : '' }}">
-                            <svg fill="{{ $book->isFavorited ?? false ? 'currentColor' : 'none' }}" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/>
-                            </svg>
-                        </button>
-                    </form>
-                </div>
-
-                <div class="book-content">
-                    <div class="book-category">{{ $book->category }}</div>
-                    <h3 class="book-title">{{ Str::limit($book->book_name, 40) }}</h3>
-                    <p class="book-author">by {{ $book->author }}</p>
-                    
-                    <div class="book-meta">
-                        <div class="book-rating">
-                            @for($i = 1; $i <= 5; $i++)
-                                <svg class="star {{ $i <= ($book->rating ?? 0) ? 'filled' : '' }}" fill="currentColor" viewBox="0 0 24 24">
-                                    <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
-                                </svg>
-                            @endfor
-                            <span class="rating-text">{{ number_format($book->rating ?? 0, 1) }}</span>
-                        </div>
-                        <div class="book-copies">
-                            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
-                            </svg>
-                            <span>{{ $book->available_copies }}/{{ $book->total_copies }}</span>
+        
+        {{-- Scrollable Book Grid --}}
+        <div class="overflow-x-auto pb-4 -mx-2 px-2">
+            <div class="flex space-x-6 min-w-max">
+                @foreach($recommendedBooks as $index => $book)
+                    <div class="book-card group cursor-pointer" style="animation-delay: {{ 0.1 * ($index + 1) }}s">
+                        <div class="relative">
+                            {{-- Book Cover --}}
+                            <div class="w-48 h-72 rounded-xl overflow-hidden shadow-lg bg-gray-100 relative">
+                                @if($book->photo)
+                                    <img src="{{ asset('storage/' . $book->photo) }}" 
+                                         alt="{{ $book->book_name }}" 
+                                         class="w-full h-full object-cover">
+                                @else
+                                    <div class="w-full h-full bg-gradient-to-br from-blue-400 to-purple-600 flex items-center justify-center">
+                                        <svg class="w-16 h-16 text-white opacity-50" fill="currentColor" viewBox="0 0 20 20">
+                                            <path d="M9 4.804A7.968 7.968 0 005.5 4c-1.255 0-2.443.29-3.5.804v10A7.969 7.969 0 015.5 14c1.669 0 3.218.51 4.5 1.385A7.962 7.962 0 0114.5 14c1.255 0 2.443.29 3.5.804v-10A7.968 7.968 0 0014.5 4c-1.255 0-2.443.29-3.5.804V12a1 1 0 11-2 0V4.804z"/>
+                                        </svg>
+                                    </div>
+                                @endif
+                                
+                                {{-- Hover Overlay --}}
+                                <div class="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-60 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all duration-300">
+                                    <div class="transform scale-75 group-hover:scale-100 transition-transform">
+                                        <button class="px-4 py-2 bg-white text-gray-900 rounded-lg font-medium hover:bg-gray-100">
+                                            View Details
+                                        </button>
+                                    </div>
+                                </div>
+                                
+                                {{-- Rating Badge --}}
+                                @if($book->rating)
+                                    <div class="absolute top-3 right-3 bg-yellow-400 text-gray-900 px-2 py-1 rounded-lg text-xs font-bold flex items-center space-x-1">
+                                        <svg class="w-3 h-3" fill="currentColor" viewBox="0 0 20 20">
+                                            <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/>
+                                        </svg>
+                                        <span>{{ number_format($book->rating, 1) }}</span>
+                                    </div>
+                                @endif
+                                
+                                {{-- Favorite Button --}}
+                                <button class="absolute top-3 left-3 w-8 h-8 bg-white bg-opacity-90 rounded-full flex items-center justify-center hover:bg-opacity-100 opacity-0 group-hover:opacity-100 transition-opacity">
+                                    <svg class="w-5 h-5 text-gray-700 hover:text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/>
+                                    </svg>
+                                </button>
+                            </div>
+                            
+                            {{-- Book Info --}}
+                            <div class="mt-3 space-y-1">
+                                <h3 class="font-semibold text-gray-900 text-sm line-clamp-2 group-hover:text-blue-600">
+                                    {{ $book->book_name }}
+                                </h3>
+                                <p class="text-xs text-gray-600">
+                                    {{ $book->author }}
+                                </p>
+                                <div class="flex items-center justify-between">
+                                    <span class="text-xs text-gray-500">{{ $book->published_year }}</span>
+                                    @if($book->available_copies > 0)
+                                        <span class="text-xs text-green-600 font-medium">{{ $book->available_copies }} available</span>
+                                    @else
+                                        <span class="text-xs text-red-600 font-medium">Not available</span>
+                                    @endif
+                                </div>
+                            </div>
                         </div>
                     </div>
-
-                    <a href="{{ route('books.show', $book->id) }}" class="view-details-btn">
-                        <span>View Details</span>
-                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
-                        </svg>
-                    </a>
-                </div>
+                @endforeach
             </div>
+        </div>
+    </section>
+    
+    {{-- Book Categories Section --}}
+    <section class="fade-in" style="animation-delay: 0.4s">
+        <div class="flex items-center justify-between mb-6">
+            <h2 class="text-2xl font-bold text-gray-900">Book Categories</h2>
+            <button class="w-8 h-8 border-2 border-gray-300 rounded-full flex items-center justify-center hover:border-blue-600 hover:text-blue-600 transition-colors">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"/>
+                </svg>
+            </button>
+        </div>
+        
+        {{-- Category Cards Grid --}}
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-6">
+            
+            @foreach($bookCategories as $index => $categoryData)
+                <a href="{{ route('books.category', $categoryData['slug']) }}" 
+                   class="hover-scale rounded-2xl overflow-hidden shadow-md hover:shadow-xl cursor-pointer"
+                   style="animation-delay: {{ 0.1 * ($index + 1) }}s; animation-name: fadeIn;">
+                    
+                    {{-- Category Card with gradient background --}}
+                    <div class="relative h-48 bg-gradient-to-br {{ $categoryData['gradient'] }} p-6 flex flex-col justify-between">
+                        
+                        {{-- Category Icon/Image --}}
+                        @if($categoryData['image'])
+                            <div class="absolute inset-0 opacity-20">
+                                <img src="{{ asset('storage/' . $categoryData['image']) }}" 
+                                     alt="{{ $categoryData['name'] }}" 
+                                     class="w-full h-full object-cover">
+                            </div>
+                        @endif
+                        
+                        {{-- Category Content --}}
+                        <div class="relative z-10">
+                            <div class="flex items-start justify-between">
+                                <div>
+                                    <h3 class="text-white font-bold text-lg mb-1">{{ $categoryData['name'] }}</h3>
+                                    <p class="text-white text-opacity-90 text-sm">{{ $categoryData['count'] }} books</p>
+                                </div>
+                                
+                                {{-- Category Icon --}}
+                                <div class="w-10 h-10 bg-white bg-opacity-20 rounded-lg flex items-center justify-center">
+                                    {!! $categoryData['icon'] !!}
+                                </div>
+                            </div>
+                        </div>
+                        
+                        {{-- Bottom tag or label --}}
+                        <div class="relative z-10">
+                            <span class="inline-block px-3 py-1 bg-white bg-opacity-20 backdrop-blur-sm rounded-full text-white text-xs font-medium">
+                                {{ $categoryData['tag'] ?? 'Popular' }}
+                            </span>
+                        </div>
+                        
+                    </div>
+                </a>
+            @endforeach
+            
+        </div>
+    </section>
+    
+    {{-- Recently Added Books --}}
+    <section class="fade-in" style="animation-delay: 0.6s">
+        <div class="flex items-center justify-between mb-6">
+            <h2 class="text-2xl font-bold text-gray-900">Recently Added</h2>
+            <a href="{{ route('books.recent') }}" class="text-blue-600 hover:text-blue-700 font-medium text-sm flex items-center space-x-1">
+                <span>View All</span>
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+                </svg>
+            </a>
+        </div>
+        
+        {{-- Recently Added Books Grid --}}
+        <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-6">
+            @foreach($recentBooks as $index => $book)
+                <div class="book-card group cursor-pointer" style="animation-delay: {{ 0.05 * ($index + 1) }}s">
+                    <div class="relative">
+                        {{-- Book Cover --}}
+                        <div class="w-full aspect-[2/3] rounded-lg overflow-hidden shadow-md bg-gray-100 relative">
+                            @if($book->photo)
+                                <img src="{{ asset('storage/' . $book->photo) }}" 
+                                     alt="{{ $book->book_name }}" 
+                                     class="w-full h-full object-cover">
+                            @else
+                                <div class="w-full h-full bg-gradient-to-br from-indigo-400 to-pink-600 flex items-center justify-center">
+                                    <svg class="w-12 h-12 text-white opacity-50" fill="currentColor" viewBox="0 0 20 20">
+                                        <path d="M9 4.804A7.968 7.968 0 005.5 4c-1.255 0-2.443.29-3.5.804v10A7.969 7.969 0 015.5 14c1.669 0 3.218.51 4.5 1.385A7.962 7.962 0 0114.5 14c1.255 0 2.443.29 3.5.804v-10A7.968 7.968 0 0014.5 4c-1.255 0-2.443.29-3.5.804V12a1 1 0 11-2 0V4.804z"/>
+                                    </svg>
+                                </div>
+                            @endif
+                            
+                            {{-- New Badge --}}
+                            <div class="absolute top-2 left-2 bg-green-500 text-white px-2 py-1 rounded text-xs font-bold">
+                                NEW
+                            </div>
+                        </div>
+                        
+                        {{-- Book Info --}}
+                        <div class="mt-2 space-y-1">
+                            <h3 class="font-medium text-gray-900 text-xs line-clamp-2 group-hover:text-blue-600">
+                                {{ $book->book_name }}
+                            </h3>
+                            <p class="text-xs text-gray-500">
+                                {{ Str::limit($book->author, 20) }}
+                            </p>
+                        </div>
+                    </div>
+                </div>
             @endforeach
         </div>
-
-        <!-- Pagination -->
-        <div class="pagination-wrapper">
-            {{ $books->links() }}
+    </section>
+    
+    {{-- Popular This Week --}}
+    <section class="fade-in" style="animation-delay: 0.8s">
+        <div class="flex items-center justify-between mb-6">
+            <div>
+                <h2 class="text-2xl font-bold text-gray-900">Popular This Week</h2>
+                <p class="text-gray-600 text-sm mt-1">Most borrowed books this week</p>
+            </div>
         </div>
-        @else
-        <div class="empty-state">
-            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
-            </svg>
-            <h3>No books found</h3>
-            <p>Try adjusting your search or filters</p>
+        
+        {{-- Popular Books List --}}
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            @foreach($popularBooks as $index => $book)
+                <div class="flex space-x-4 p-4 bg-white rounded-xl border border-gray-200 hover:border-blue-300 hover:shadow-md transition-all cursor-pointer"
+                     style="animation-delay: {{ 0.1 * ($index + 1) }}s; animation-name: fadeIn;">
+                    
+                    {{-- Rank Number --}}
+                    <div class="flex-shrink-0 w-10 h-10 bg-gradient-to-br from-yellow-400 to-orange-500 rounded-lg flex items-center justify-center">
+                        <span class="text-white font-bold text-lg">{{ $index + 1 }}</span>
+                    </div>
+                    
+                    {{-- Book Cover Thumbnail --}}
+                    <div class="flex-shrink-0 w-16 h-24 rounded-lg overflow-hidden bg-gray-100">
+                        @if($book->photo)
+                            <img src="{{ asset('storage/' . $book->photo) }}" 
+                                 alt="{{ $book->book_name }}" 
+                                 class="w-full h-full object-cover">
+                        @else
+                            <div class="w-full h-full bg-gradient-to-br from-blue-500 to-purple-600"></div>
+                        @endif
+                    </div>
+                    
+                    {{-- Book Details --}}
+                    <div class="flex-1 min-w-0">
+                        <h3 class="font-semibold text-gray-900 line-clamp-1">{{ $book->book_name }}</h3>
+                        <p class="text-sm text-gray-600 mt-1">{{ $book->author }}</p>
+                        <div class="flex items-center space-x-4 mt-2">
+                            <div class="flex items-center space-x-1">
+                                <svg class="w-4 h-4 text-yellow-400" fill="currentColor" viewBox="0 0 20 20">
+                                    <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/>
+                                </svg>
+                                <span class="text-sm font-medium text-gray-700">{{ number_format($book->rating, 1) }}</span>
+                            </div>
+                            <span class="text-xs text-gray-500">{{ $book->category }}</span>
+                        </div>
+                    </div>
+                    
+                    {{-- Action Button --}}
+                    <div class="flex-shrink-0 flex items-center">
+                        <button class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 text-sm font-medium">
+                            Borrow
+                        </button>
+                    </div>
+                </div>
+            @endforeach
         </div>
-        @endif
-    </div>
+    </section>
+    
 </div>
+@endsection
 
-<style>
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-}
-
-.dashboard-container {
-    min-height: 100vh;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    padding-bottom: 60px;
-}
-
-/* Hero Section */
-.hero-section {
-    background: linear-gradient(135deg, rgba(102, 126, 234, 0.95) 0%, rgba(118, 75, 162, 0.95) 100%);
-    padding: 80px 20px 120px;
-    position: relative;
-    overflow: hidden;
-}
-
-.hero-section::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.05'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
-    opacity: 0.3;
-}
-
-.hero-content {
-    max-width: 1200px;
-    margin: 0 auto;
-    position: relative;
-    z-index: 1;
-}
-
-.hero-title {
-    font-size: 3.5rem;
-    font-weight: 800;
-    color: white;
-    text-align: center;
-    margin-bottom: 16px;
-    text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
-}
-
-.hero-subtitle {
-    font-size: 1.25rem;
-    color: rgba(255, 255, 255, 0.9);
-    text-align: center;
-    margin-bottom: 48px;
-}
-
-/* Search Panel */
-.search-panel {
-    background: white;
-    border-radius: 16px;
-    padding: 32px;
-    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
-    max-width: 900px;
-    margin: 0 auto;
-}
-
-.search-form {
-    display: flex;
-    flex-direction: column;
-    gap: 20px;
-}
-
-.search-input-wrapper {
-    position: relative;
-}
-
-.search-icon {
-    position: absolute;
-    left: 16px;
-    top: 50%;
-    transform: translateY(-50%);
-    width: 24px;
-    height: 24px;
-    color: #9ca3af;
-}
-
-.search-input {
-    width: 100%;
-    padding: 16px 16px 16px 52px;
-    border: 2px solid #e5e7eb;
-    border-radius: 12px;
-    font-size: 16px;
-    transition: all 0.3s ease;
-}
-
-.search-input:focus {
-    outline: none;
-    border-color: #667eea;
-    box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.1);
-}
-
-.filter-group {
-    display: grid;
-    grid-template-columns: 1fr 1fr auto;
-    gap: 12px;
-}
-
-.filter-select {
-    padding: 12px 16px;
-    border: 2px solid #e5e7eb;
-    border-radius: 12px;
-    font-size: 14px;
-    background: white;
-    cursor: pointer;
-    transition: all 0.3s ease;
-}
-
-.filter-select:focus {
-    outline: none;
-    border-color: #667eea;
-}
-
-.search-btn {
-    padding: 12px 32px;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    color: white;
-    border: none;
-    border-radius: 12px;
-    font-size: 16px;
-    font-weight: 600;
-    cursor: pointer;
-    transition: all 0.3s ease;
-}
-
-.search-btn:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 8px 20px rgba(102, 126, 234, 0.4);
-}
-
-/* Stats Container */
-.stats-container {
-    max-width: 1200px;
-    margin: -60px auto 60px;
-    padding: 0 20px;
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-    gap: 24px;
-    position: relative;
-    z-index: 2;
-}
-
-.stat-card {
-    background: white;
-    border-radius: 16px;
-    padding: 24px;
-    display: flex;
-    align-items: center;
-    gap: 20px;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
-    transition: all 0.3s ease;
-}
-
-.stat-card:hover {
-    transform: translateY(-4px);
-    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.15);
-}
-
-.stat-icon {
-    width: 60px;
-    height: 60px;
-    border-radius: 12px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
-.stat-icon svg {
-    width: 32px;
-    height: 32px;
-    color: white;
-}
-
-.stat-icon.books {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-}
-
-.stat-icon.borrowed {
-    background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
-}
-
-.stat-icon.favorites {
-    background: linear-gradient(135deg, #fa709a 0%, #fee140 100%);
-}
-
-.stat-icon.credit {
-    background: linear-gradient(135deg, #30cfd0 0%, #330867 100%);
-}
-
-.stat-number {
-    font-size: 2rem;
-    font-weight: 700;
-    color: #1f2937;
-}
-
-.stat-label {
-    font-size: 0.875rem;
-    color: #6b7280;
-    font-weight: 500;
-}
-
-/* Books Section */
-.books-section {
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 0 20px;
-}
-
-.section-header {
-    margin-bottom: 32px;
-    text-align: center;
-}
-
-.section-title {
-    font-size: 2.5rem;
-    font-weight: 700;
-    color: white;
-    margin-bottom: 8px;
-}
-
-.section-subtitle {
-    font-size: 1.125rem;
-    color: rgba(255, 255, 255, 0.8);
-}
-
-/* Books Grid */
-.books-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-    gap: 32px;
-    margin-bottom: 48px;
-}
-
-.book-card {
-    background: white;
-    border-radius: 16px;
-    overflow: hidden;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
-    transition: all 0.3s ease;
-}
-
-.book-card:hover {
-    transform: translateY(-8px);
-    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.2);
-}
-
-.book-image-wrapper {
-    position: relative;
-    padding-top: 140%;
-    background: #f3f4f6;
-    overflow: hidden;
-}
-
-.book-image {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    transition: transform 0.3s ease;
-}
-
-.book-card:hover .book-image {
-    transform: scale(1.05);
-}
-
-.book-placeholder {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-}
-
-.book-placeholder svg {
-    width: 80px;
-    height: 80px;
-    color: white;
-    opacity: 0.5;
-}
-
-.book-badge {
-    position: absolute;
-    top: 12px;
-    right: 12px;
-    padding: 6px 12px;
-    border-radius: 20px;
-    font-size: 0.75rem;
-    font-weight: 600;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-}
-
-.book-badge.available {
-    background: #10b981;
-    color: white;
-}
-
-.book-badge.unavailable {
-    background: #ef4444;
-    color: white;
-}
-
-.favorite-form {
-    position: absolute;
-    top: 12px;
-    left: 12px;
-}
-
-.favorite-btn {
-    width: 40px;
-    height: 40px;
-    border-radius: 50%;
-    background: white;
-    border: none;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-}
-
-.favorite-btn svg {
-    width: 20px;
-    height: 20px;
-    color: #ef4444;
-}
-
-.favorite-btn:hover {
-    transform: scale(1.1);
-}
-
-.favorite-btn.active {
-    background: #ef4444;
-}
-
-.favorite-btn.active svg {
-    color: white;
-}
-
-.book-content {
-    padding: 20px;
-}
-
-.book-category {
-    display: inline-block;
-    padding: 4px 12px;
-    background: #ede9fe;
-    color: #7c3aed;
-    border-radius: 12px;
-    font-size: 0.75rem;
-    font-weight: 600;
-    margin-bottom: 12px;
-}
-
-.book-title {
-    font-size: 1.25rem;
-    font-weight: 700;
-    color: #1f2937;
-    margin-bottom: 8px;
-    line-height: 1.3;
-}
-
-.book-author {
-    font-size: 0.875rem;
-    color: #6b7280;
-    margin-bottom: 16px;
-}
-
-.book-meta {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 16px;
-    padding: 12px 0;
-    border-top: 1px solid #e5e7eb;
-}
-
-.book-rating {
-    display: flex;
-    align-items: center;
-    gap: 4px;
-}
-
-.star {
-    width: 16px;
-    height: 16px;
-    color: #d1d5db;
-}
-
-.star.filled {
-    color: #fbbf24;
-}
-
-.rating-text {
-    font-size: 0.875rem;
-    font-weight: 600;
-    color: #1f2937;
-    margin-left: 4px;
-}
-
-.book-copies {
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    font-size: 0.875rem;
-    color: #6b7280;
-}
-
-.book-copies svg {
-    width: 16px;
-    height: 16px;
-}
-
-.view-details-btn {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 8px;
-    width: 100%;
-    padding: 12px;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    color: white;
-    border-radius: 12px;
-    text-decoration: none;
-    font-weight: 600;
-    transition: all 0.3s ease;
-}
-
-.view-details-btn:hover {
-    transform: translateX(4px);
-}
-
-.view-details-btn svg {
-    width: 16px;
-    height: 16px;
-}
-
-/* Empty State */
-.empty-state {
-    text-align: center;
-    padding: 80px 20px;
-    background: white;
-    border-radius: 16px;
-}
-
-.empty-state svg {
-    width: 80px;
-    height: 80px;
-    color: #d1d5db;
-    margin-bottom: 24px;
-}
-
-.empty-state h3 {
-    font-size: 1.5rem;
-    font-weight: 700;
-    color: #1f2937;
-    margin-bottom: 8px;
-}
-
-.empty-state p {
-    font-size: 1rem;
-    color: #6b7280;
-}
-
-/* Pagination */
-.pagination-wrapper {
-    display: flex;
-    justify-content: center;
-    margin-top: 40px;
-}
-
-/* Animations */
-@keyframes fadeIn {
-    from {
-        opacity: 0;
-        transform: translateY(-20px);
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
-}
-
-@keyframes slideUp {
-    from {
-        opacity: 0;
-        transform: translateY(40px);
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
-}
-
-@keyframes scaleIn {
-    from {
-        opacity: 0;
-        transform: scale(0.9);
-    }
-    to {
-        opacity: 1;
-        transform: scale(1);
-    }
-}
-
-@keyframes fadeInUp {
-    from {
-        opacity: 0;
-        transform: translateY(30px);
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
-}
-
-.animate-fade-in {
-    animation: fadeIn 0.6s ease-out;
-}
-
-.animate-fade-in-delay {
-    animation: fadeIn 0.6s ease-out 0.2s backwards;
-}
-
-.animate-slide-up {
-    animation: slideUp 0.8s ease-out 0.3s backwards;
-}
-
-.animate-scale-in {
-    animation: scaleIn 0.6s ease-out backwards;
-}
-
-.animate-fade-in-up {
-    animation: fadeInUp 0.6s ease-out backwards;
-}
-
-/* Responsive Design */
-@media (max-width: 768px) {
-    .hero-title {
-        font-size: 2rem;
-    }
-    
-    .hero-subtitle {
-        font-size: 1rem;
-    }
-    
-    .search-panel {
-        padding: 24px;
-    }
-    
-    .filter-group {
-        grid-template-columns: 1fr;
-    }
-    
-    .stats-container {
-        grid-template-columns: 1fr;
-    }
-    
-    .books-grid {
-        grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
-        gap: 20px;
-    }
-    
-    .section-title {
-        font-size: 1.75rem;
-    }
-}
-
-@media (max-width: 480px) {
-    .hero-section {
-        padding: 60px 16px 100px;
-    }
-    
-    .books-grid {
-        grid-template-columns: 1fr;
-    }
-}
-</style>
-
+@push('scripts')
 <script>
-document.addEventListener('DOMContentLoaded', function() {
-    // Smooth scroll to books section when search is submitted
-    const searchForm = document.querySelector('.search-form');
-    if (searchForm) {
-        searchForm.addEventListener('submit', function(e) {
-            // Let form submit normally, but add smooth animation
-            setTimeout(() => {
-                const booksSection = document.querySelector('.books-section');
-                if (booksSection) {
-                    booksSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
-                }
-            }, 100);
-        });
-    }
-
-    // Add loading animation to favorite buttons
-    const favoriteForms = document.querySelectorAll('.favorite-form');
-    favoriteForms.forEach(form => {
-        form.addEventListener('submit', function(e) {
-            const button = this.querySelector('.favorite-btn');
-            button.style.pointerEvents = 'none';
-            button.style.opacity = '0.6';
-            
-            // Re-enable after animation
-            setTimeout(() => {
-                button.style.pointerEvents = 'auto';
-                button.style.opacity = '1';
-            }, 1000);
-        });
-    });
-
-    // Add pulse animation to search input on focus
-    const searchInput = document.querySelector('.search-input');
-    if (searchInput) {
-        searchInput.addEventListener('focus', function() {
-            this.parentElement.style.transform = 'scale(1.02)';
-            this.parentElement.style.transition = 'transform 0.3s ease';
+    // Add smooth scroll behavior for horizontal book scrolling
+    document.querySelectorAll('.overflow-x-auto').forEach(container => {
+        let isDown = false;
+        let startX;
+        let scrollLeft;
+        
+        container.addEventListener('mousedown', (e) => {
+            isDown = true;
+            container.style.cursor = 'grabbing';
+            startX = e.pageX - container.offsetLeft;
+            scrollLeft = container.scrollLeft;
         });
         
-        searchInput.addEventListener('blur', function() {
-            this.parentElement.style.transform = 'scale(1)';
+        container.addEventListener('mouseleave', () => {
+            isDown = false;
+            container.style.cursor = 'grab';
         });
-    }
-
-    // Parallax effect on hero section
-    window.addEventListener('scroll', function() {
-        const heroSection = document.querySelector('.hero-section');
-        if (heroSection) {
-            const scrolled = window.pageYOffset;
-            const rate = scrolled * 0.5;
-            heroSection.style.transform = `translate3d(0, ${rate}px, 0)`;
-        }
+        
+        container.addEventListener('mouseup', () => {
+            isDown = false;
+            container.style.cursor = 'grab';
+        });
+        
+        container.addEventListener('mousemove', (e) => {
+            if (!isDown) return;
+            e.preventDefault();
+            const x = e.pageX - container.offsetLeft;
+            const walk = (x - startX) * 2;
+            container.scrollLeft = scrollLeft - walk;
+        });
     });
-
-    // Intersection Observer for scroll animations
-    const observerOptions = {
-        threshold: 0.1,
-        rootMargin: '0px 0px -50px 0px'
-    };
-
-    const observer = new IntersectionObserver((entries) => {
-        entries.forEach(entry => {
-            if (entry.isIntersecting) {
-                entry.target.style.opacity = '1';
-                entry.target.style.transform = 'translateY(0)';
+    
+    // Add click handlers for book cards
+    document.querySelectorAll('.book-card').forEach(card => {
+        card.addEventListener('click', function(e) {
+            if (!e.target.closest('button')) {
+                // Navigate to book details page
+                console.log('Book clicked');
             }
         });
-    }, observerOptions);
-
-    // Observe book cards for scroll animation
-    const bookCards = document.querySelectorAll('.book-card');
-    bookCards.forEach(card => {
-        observer.observe(card);
     });
-
-    // Add hover effect sound (optional visual feedback)
-    const viewDetailsButtons = document.querySelectorAll('.view-details-btn');
-    viewDetailsButtons.forEach(button => {
-        button.addEventListener('mouseenter', function() {
-            this.style.transform = 'translateX(4px)';
-        });
-        
-        button.addEventListener('mouseleave', function() {
-            this.style.transform = 'translateX(0)';
-        });
-    });
-
-    // Stat counter animation
-    const statNumbers = document.querySelectorAll('.stat-number');
-    statNumbers.forEach(stat => {
-        const finalValue = stat.textContent;
-        const isCredit = finalValue.includes('RM');
-        
-        if (!isCredit) {
-            const targetValue = parseInt(finalValue.replace(/\D/g, ''));
-            let currentValue = 0;
-            const increment = Math.ceil(targetValue / 50);
-            const duration = 1500;
-            const stepTime = duration / (targetValue / increment);
-            
-            const counter = setInterval(() => {
-                currentValue += increment;
-                if (currentValue >= targetValue) {
-                    stat.textContent = targetValue;
-                    clearInterval(counter);
-                } else {
-                    stat.textContent = currentValue;
-                }
-            }, stepTime);
-        }
-    });
-
-    // Add ripple effect to buttons
-    function createRipple(event) {
-        const button = event.currentTarget;
-        const ripple = document.createElement('span');
-        const diameter = Math.max(button.clientWidth, button.clientHeight);
-        const radius = diameter / 2;
-        
-        ripple.style.width = ripple.style.height = `${diameter}px`;
-        ripple.style.left = `${event.clientX - button.offsetLeft - radius}px`;
-        ripple.style.top = `${event.clientY - button.offsetTop - radius}px`;
-        ripple.classList.add('ripple');
-        
-        const rippleElement = button.getElementsByClassName('ripple')[0];
-        if (rippleElement) {
-            rippleElement.remove();
-        }
-        
-        button.appendChild(ripple);
-    }
-    
-    const buttons = document.querySelectorAll('.search-btn, .view-details-btn');
-    buttons.forEach(button => {
-        button.addEventListener('click', createRipple);
-    });
-});
 </script>
-
-<style>
-/* Additional ripple effect styles */
-.search-btn, .view-details-btn {
-    position: relative;
-    overflow: hidden;
-}
-
-.ripple {
-    position: absolute;
-    border-radius: 50%;
-    background: rgba(255, 255, 255, 0.6);
-    transform: scale(0);
-    animation: ripple-animation 0.6s ease-out;
-    pointer-events: none;
-}
-
-@keyframes ripple-animation {
-    to {
-        transform: scale(4);
-        opacity: 0;
-    }
-}
-
-/* Loading spinner for favorite button */
-@keyframes spin {
-    to {
-        transform: rotate(360deg);
-    }
-}
-
-.favorite-btn.loading::after {
-    content: '';
-    position: absolute;
-    width: 16px;
-    height: 16px;
-    border: 2px solid #fff;
-    border-top-color: transparent;
-    border-radius: 50%;
-    animation: spin 0.6s linear infinite;
-}
-
-/* Hover glow effect for book cards */
-.book-card::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: linear-gradient(135deg, rgba(102, 126, 234, 0.1) 0%, rgba(118, 75, 162, 0.1) 100%);
-    opacity: 0;
-    transition: opacity 0.3s ease;
-    border-radius: 16px;
-    pointer-events: none;
-}
-
-.book-card:hover::before {
-    opacity: 1;
-}
-
-/* Smooth transitions for all interactive elements */
-* {
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
-}
-
-/* Custom scrollbar */
-::-webkit-scrollbar {
-    width: 12px;
-}
-
-::-webkit-scrollbar-track {
-    background: #f1f1f1;
-}
-
-::-webkit-scrollbar-thumb {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    border-radius: 6px;
-}
-
-::-webkit-scrollbar-thumb:hover {
-    background: linear-gradient(135deg, #5568d3 0%, #6a3f8f 100%);
-}
-
-/* Focus styles for accessibility */
-.search-input:focus,
-.filter-select:focus,
-.search-btn:focus,
-.view-details-btn:focus,
-.favorite-btn:focus {
-    outline: 3px solid rgba(102, 126, 234, 0.5);
-    outline-offset: 2px;
-}
-
-/* Print styles */
-@media print {
-    .hero-section,
-    .search-panel,
-    .stats-container,
-    .favorite-btn {
-        display: none;
-    }
-    
-    .dashboard-container {
-        background: white;
-    }
-    
-    .book-card {
-        break-inside: avoid;
-        page-break-inside: avoid;
-    }
-}
-</style>
-@endsection
+@endpush
