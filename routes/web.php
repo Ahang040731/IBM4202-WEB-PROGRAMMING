@@ -1,12 +1,20 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\FavouriteController;
+use App\Http\Controllers\BookController;
 
 Route::get('/', function () {
     return view('client.homepage.index');
 });
 
 //Route::view('/login', 'LOGIN.login')->name('login');
+Route::middleware(['auth'])->group(function () {
+    Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+    Route::post('/favorites/{book}/toggle', [FavouriteController::class, 'toggle'])->name('favorites.toggle');
+    Route::get('/books/{book}', [BookController::class, 'show'])->name('books.show');
+});
 
 Route::get('/login', function () {
     return view('LOGIN.login');
@@ -27,5 +35,15 @@ Route::post('/', function () {
     // Just redirect for now
     return redirect('/');
 })->name('');
+
+Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+Route::get('/books', [BookController::class, 'index'])->name('books.index');
+Route::get('/borrowed', [BookController::class, 'borrowed'])->name('borrowed.index');
+Route::get('/returned', [BookController::class, 'returned'])->name('returned.index');
+Route::get('/fines', [BookController::class, 'fines'])->name('fines.index');
+Route::get('/favorites', [FavouriteController::class, 'index'])->name('favorites.index');
+Route::get('/profile', [DashboardController::class, 'showProfile'])->name('profile.show');
+Route::get('/profile/edit', [DashboardController::class, 'editProfile'])->name('profile.edit');
+Route::post('/logout', [DashboardController::class, 'logout'])->name('logout');
 
 ?>
