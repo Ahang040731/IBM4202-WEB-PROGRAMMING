@@ -7,6 +7,7 @@ This is __GROUP 888__, our title is __Online Library Management__
 [Database](#database)  
 [Installation](#installation)  
 [Pre-Launch Setup](#pre-launch-setup)  
+[Library Require](#library-require)  
 [How To Launch](#how-to-launch)
 
 ## Group Member
@@ -110,6 +111,11 @@ After finish all these config, run this in terminal under the project path:
 php artisan migrate
 ```
 
+## Library Require
+Tailwind v4
+```
+npm i -D tailwindcss @tailwindcss/postcss
+```
 
 ## How To Launch
 Before launch the web, ensure you are under the path of the project then run:
@@ -295,6 +301,7 @@ use App\Models\Example;
 If you have modify database's table or data you need to clear current database and recreate by running this code:
 ```
 php artisan migrate:fresh
+php artisan migrate:fresh --seed
 ```
 
 ### Frontend  
@@ -305,7 +312,22 @@ This folder store all of the custom css for website.
 This folder store all of the custom js for website.
 
 `..\resources\view\..`  
-This folder store all web page. Ensure all of the page is using `example.blade.php` format.
+
+__File Naming Rule__
+> [!CAUTION]
+> Please follow this for consistent file naming and structure
+
+Laravel itself doesn’t require `index.blade.php`.
+It’s just a convention that matches RESTful controller methods:
+
+| Controller Method | Typical View | Use When |
+| ----------------- | ------------ | -------- |
+| index() | index.blade.php | For a list or main section page |
+| show($id) | show.blade.php | For detail pages (e.g., book details) |
+| create() | create.blade.php | For add new record form |
+| edit($id) | edit.blade.php | For edit record form |
+| profile() or custom | profile.blade.php | For specific functions like user profile |
+
 
 `..\resources\view\layouts\app.blade.php`  
 This file is the one storing the header and sidemenu. For those page require header and side menu ensure you call it before your own coding. Example:   
@@ -323,3 +345,79 @@ This file is the one storing the header and sidemenu. For those page require hea
 ### Backend  
 `..\app\Http\Controllers\..`  
 This folder store all of the backend file. The file name should follow the frontend file name with `Controller` at the back for example `DashboardController.php`.  
+
+### How to Redirect to other page
+To use redirect function you will need to add it in `../routes/web.php`.
+
+> [!IMPORTANT]
+> all of the path will start from `../resources/views/..`.
+
+#### Basic `GET` Route
+If `example_page` is target page to redirect and is under same path:
+```
+Route::get('/example_page', function () {
+    return view('example_page');
+});
+```
+
+If `example_page` is target page to redirect and is under `../resources/views/layout/..`:
+```
+Route::get('/example_page', function () {
+    return view('layout.example_page');
+});
+```
+
+> [!CAUTION]
+> If you having two `example_page` file with same name but under different path, you need to avoid using same url. It shoulde be `Route::get('/example_page', function () {..})` and `Route::get('/example_page1', function () {..})`.
+
+`GET` Route sending data to other page
+```
+Route::get('/example_page', function () {
+    $user = session('user');
+    return view('example_page', compact('user'));
+});
+```
+
+Example way using `GET` route:
+```
+<a href="{{ route('example') ?? url('/example_page') }}"
+    class="">Example</a>
+```
+
+#### Basic `POST` Route
+`POST` is normally used for submitting forms (login, register, update data).
+```
+Route::post('/example_function', function () {
+    // handle calculation etc code
+    return redirect('/example_page2');  // redirect to specific page or original page
+})->name('example_function');
+
+```
+Example form using `POST` route:
+```
+<form action="{{ route('example_function') }}" method="POST">
+    @csrf
+    <input type="text" name="email">
+    <input type="password" name="password">
+    <button type="submit">Login</button>
+</form>
+```
+
+### Session
+Store data to session :
+```
+session([
+    'account_id' => 1,
+    'username' => "example"
+    ]);
+```
+
+Call data from session :
+```
+Welcome, {{ session('username', 'Guest') }}
+```
+
+Clear session :
+```
+session()->flush();
+```

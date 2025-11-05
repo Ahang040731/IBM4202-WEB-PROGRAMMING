@@ -11,16 +11,14 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('users', function (Blueprint $table) {
+        Schema::create('book_copies', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('account_id')->constrained('accounts')->cascadeOnDelete();
-            $table->string('username');
-            $table->string('phone')->nullable();
-            $table->boolean('is_active')->default(true);
-            $table->decimal('credit', 10, 2)->default(0);
-            $table->string('photo')->nullable();
-            $table->text('address')->nullable();
-            
+            $table->foreignId('book_id')->constrained('books')->cascadeOnDelete();
+
+            $table->enum('status', ['available', 'not available'])->default('available');
+            $table->string('condition')->nullable(); // e.g. 'good', 'damaged', 'lost'
+            $table->string('barcode')->nullable(); // optional if you need unique tracking
+
             $table->timestamp('created_at')->useCurrent();
             $table->timestamp('updated_at')->nullable()->useCurrentOnUpdate();
         });
@@ -31,6 +29,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('users');
+        Schema::dropIfExists('book_copies');
     }
 };
