@@ -60,7 +60,7 @@ Route::post('/logout', [DashboardController::class, 'logout'])->name('logout');
 
 
 // Redirect to borrow history route
-Route::get('/client/borrow-history', [BorrowHistoryController::class, 'index'])
+Route::get('/client/borrowhistory', [BorrowHistoryController::class, 'index'])
     ->name('client.borrowhistory.index');
 
 ?>

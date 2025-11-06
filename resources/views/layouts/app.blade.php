@@ -448,18 +448,11 @@
           <span class="badge">New</span>
         </a>
         
-        <a href="{{ route('borrowed.index') ?? '#' }}" 
+        <a href="{{ route('client.borrowhistory.index') ?? '#' }}" 
            class="nav-link"
-           :class="{ 'active': currentPage.includes('borrowed') }">
+           :class="{ 'active': currentPage.includes('borrowhistory') }">
           <span class="nav-icon">📚</span>
-          <span>Borrowed Books</span>
-        </a>
-        
-        <a href="{{ route('returned.index') ?? '#' }}" 
-           class="nav-link"
-           :class="{ 'active': currentPage.includes('returned') }">
-          <span class="nav-icon">↩️</span>
-          <span>Returned Books</span>
+          <span>Borrowed History</span>
         </a>
         
         <a href="{{ route('fines.index') ?? '#' }}" 
@@ -516,18 +509,11 @@
             <span class="badge">New</span>
           </a>
           
-          <a href="{{ route('borrowed.index') ?? '#' }}" 
+          <a href="{{ route('client.borrowhistory.index') ?? '#' }}" 
              class="nav-link"
              @click="sidebarOpen=false">
             <span class="nav-icon">📚</span>
-            <span>Borrowed Books</span>
-          </a>
-          
-          <a href="{{ route('returned.index') ?? '#' }}" 
-             class="nav-link"
-             @click="sidebarOpen=false">
-            <span class="nav-icon">↩️</span>
-            <span>Returned Books</span>
+            <span>Borrowed History</span>
           </a>
           
           <a href="{{ route('fines.index') ?? '#' }}" 
