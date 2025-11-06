@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\FavouriteController;
 use App\Http\Controllers\BookController;
+use App\Http\Controllers\BorrowHistoryController;
 
 Route::get('/', function () {
     return view('client.homepage.index');
@@ -55,5 +56,11 @@ Route::get('/favorites', [FavouriteController::class, 'index'])->name('favorites
 Route::get('/profile', [DashboardController::class, 'showProfile'])->name('profile.show');
 Route::get('/profile/edit', [DashboardController::class, 'editProfile'])->name('profile.edit');
 Route::post('/logout', [DashboardController::class, 'logout'])->name('logout');
+
+
+
+// Redirect to borrow history route
+Route::get('/client/borrow-history', [BorrowHistoryController::class, 'index'])
+    ->name('client.borrowhistory.index');
 
 ?>
