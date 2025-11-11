@@ -88,4 +88,22 @@ Route::prefix('admin')->group(function () {
     Route::post('/borrow-management/{id}/mark-returned', [BorrowController::class, 'markReturned'])->name('admin.borrows.markReturned');
 });
 
+use App\Http\Controllers\AdminBookController;
+
+Route::prefix('admin')->group(function () {
+    Route::get('/books', [AdminBookController::class, 'index'])->name('admin.books.index');
+    Route::get('/books/create', [AdminBookController::class, 'create'])->name('admin.books.create');
+    Route::post('/books', [AdminBookController::class, 'store'])->name('admin.books.store');
+    Route::get('/books/{book}/edit', [AdminBookController::class, 'edit'])->name('admin.books.edit');
+    Route::put('/books/{book}', [AdminBookController::class, 'update'])->name('admin.books.update');
+    Route::delete('/books/{book}', [AdminBookController::class, 'destroy'])->name('admin.books.destroy');
+
+    // BookCopy
+    Route::post('/books/{book}/copies', [AdminBookController::class, 'addCopy'])->name('admin.books.copies.add');
+    Route::delete('/books/copies/{copy}', [AdminBookController::class, 'deleteCopy'])->name('admin.books.copies.destroy');
+    Route::post('/books/copies/{copy}/status/{status}', [AdminBookController::class, 'updateCopyStatus'])->name('admin.books.copies.status');
+});
+
+
+
 ?>
