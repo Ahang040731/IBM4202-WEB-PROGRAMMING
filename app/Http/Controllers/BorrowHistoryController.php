@@ -4,19 +4,18 @@ namespace App\Http\Controllers;
 
 use App\Models\BorrowHistory;
 use Illuminate\Http\RedirectResponse;
-use Illuminate\Support\Carbon;
 
 class BorrowHistoryController extends Controller
 {
     public function index()
     {
-        // $userId = auth()->id();
-        $userId = 1;
+        // $userId = auth()->id() ?? 1; // TODO: restore auth()->id()
+        $userId = 1; // TODO: restore auth()->id()
 
         $current = BorrowHistory::with(['book','copy'])
             ->where('user_id', $userId)
             ->whereNull('returned_at')
-            ->orderBy('due_at')
+            ->orderBy('due_at') // soonest due first
             ->get();
 
         $previous = BorrowHistory::with(['book','copy'])
@@ -28,7 +27,6 @@ class BorrowHistoryController extends Controller
         return view('client.borrowhistory.index', compact('current','previous'));
     }
 
-    // app/Http/Controllers/BorrowHistoryController.php
     public function extend(BorrowHistory $borrow): RedirectResponse
     {
         // if ($borrow->user_id !== auth()->id()) abort(403);
@@ -41,11 +39,13 @@ class BorrowHistoryController extends Controller
             return back()->with('error', 'Maximum extensions reached.');
         }
 
-        // Do NOT change due_at here; admin will approve later.
+        if ($borrow->approve_status === 'pending') {
+            return back()->with('error', 'You already have a pending request.');
+        }
+
         $borrow->update([
-            'approve_status'   => 'pending',               // <-- force pending
-            'extension_reason' => 'User requested',        // optional
-            // keep status as-is (active/overdue). Admin will approve/reject later.
+            'approve_status'   => 'pending',
+            'extension_reason' => 'User requested',
         ]);
 
         return back()->with('success', 'Extension request sent. Waiting for approval.');
@@ -53,7 +53,6 @@ class BorrowHistoryController extends Controller
 
     public function cancel(BorrowHistory $borrow): RedirectResponse
     {
-        // Optional check
         // if ($borrow->user_id !== auth()->id()) abort(403);
 
         if ($borrow->approve_status !== 'pending') {
@@ -61,11 +60,10 @@ class BorrowHistoryController extends Controller
         }
 
         $borrow->update([
-            'approve_status' => 'rejected',
+            'approve_status'   => 'rejected',
             'extension_reason' => 'User cancelled request',
         ]);
 
         return back()->with('success', 'Extension request cancelled.');
     }
-
 }
