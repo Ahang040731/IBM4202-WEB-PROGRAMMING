@@ -77,4 +77,15 @@ Route::get('/client/profile', [ProfileController::class, 'index'])
 Route::get('/client/profile', function () {
     return view('client.profile.index');
 })->name('client.profile.index');
+
+
+use App\Http\Controllers\BorrowController;
+
+Route::prefix('admin')->group(function () {
+    Route::get('/borrow-management', [BorrowController::class, 'index'])->name('admin.borrows.index');
+    Route::post('/borrow-management/{id}/approve', [BorrowController::class, 'approve'])->name('admin.borrows.approve');
+    Route::post('/borrow-management/{id}/reject', [BorrowController::class, 'reject'])->name('admin.borrows.reject');
+    Route::post('/borrow-management/{id}/mark-returned', [BorrowController::class, 'markReturned'])->name('admin.borrows.markReturned');
+});
+
 ?>
