@@ -4,8 +4,6 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\FavouriteController;
 use App\Http\Controllers\BookController;
-use App\Http\Controllers\BorrowHistoryController;
-use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\FinesController;
 
 Route::middleware(['auth'])->group(function () {
@@ -20,7 +18,7 @@ Route::get('/', function () {
 //Route::view('/login', 'LOGIN.login')->name('login');
 Route::middleware(['auth'])->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
-    Route::post('/favorites/{book}/toggle', [FavouriteController::class, 'toggle'])->name('favorites.toggle');
+    // Route::post('/favorites/{book}/toggle', [FavouriteController::class, 'toggle'])->name('favorites.toggle');
     Route::get('/books/{book}', [BookController::class, 'show'])->name('books.show');
 });
 
@@ -65,18 +63,30 @@ Route::post('/logout', [DashboardController::class, 'logout'])->name('logout');
 Route::post('/fines/{fine}/pay', [FinesController::class, 'pay'])->name('fines.pay');
 
 
+use App\Http\Controllers\BorrowHistoryController;
 // Redirect to borrow history route
-Route::get('/client/borrowhistory', [BorrowHistoryController::class, 'index'])
-    ->name('client.borrowhistory.index');
+Route::prefix('client')->group(function () {
+    Route::get('/borrowhistory', [BorrowHistoryController::class, 'index'])
+        ->name('client.borrowhistory.index');
+    Route::post('/borrowhistory/{borrow}/extend', [BorrowHistoryController::class, 'extend'])
+        ->name('client.borrowhistory.extend');
+    Route::post('/borrowhistory/{borrow}/cancel', [BorrowHistoryController::class, 'cancel'])
+        ->name('client.borrowhistory.cancel');
+});
 
-Route::post('/client/borrowhistory/{borrow}/extend', [BorrowHistoryController::class, 'extend'])
-    ->name('client.borrowhistory.extend');
+use App\Http\Controllers\FavoriteController;
+Route::prefix('client')->group(function () {
+    Route::get('/favorites', [FavoriteController::class, 'index'])
+        ->name('client.favorites.index');
+    Route::post('/favorites/{book}/toggle', [FavoriteController::class, 'toggle'])
+        ->name('favorites.toggle');
+});
 
-Route::post('/client/borrowhistory/{borrow}/cancel', [BorrowHistoryController::class, 'cancel'])
-    ->name('client.borrowhistory.cancel');
 
 
 
+
+use App\Http\Controllers\ProfileController;
 Route::get('/client/profile', [ProfileController::class, 'index'])
     ->name('client.profile.index');
 
