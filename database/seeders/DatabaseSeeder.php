@@ -27,10 +27,17 @@ class DatabaseSeeder extends Seeder
     public function run(): void
     {
         // Default admin account
-        Account::create([
+        $adminAccount = Account::create([
             'email' => 'admin@library.com',
-            'password' => Hash::make('admin'), // hashed
+            'password' => Hash::make('admin'),
             'role' => 'admin',
+        ]);
+
+        $adminAccount->admin()->create([
+            'username' => 'System Admin',
+            'phone' => '012-0000000',
+            'address'   => 'Somewhere',
+            'photo' => null,
         ]);
 
         $user = Account::create([

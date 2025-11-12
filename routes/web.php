@@ -80,9 +80,9 @@ Route::post('/client/borrowhistory/{borrow}/cancel', [BorrowHistoryController::c
 Route::get('/client/profile', [ProfileController::class, 'index'])
     ->name('client.profile.index');
 
-Route::get('/client/profile', function () {
-    return view('client.profile.index');
-})->name('client.profile.index');
+//Route::get('/client/profile', function () {
+//    return view('client.profile.index');
+//})->name('client.profile.index');
 
 
 use App\Http\Controllers\BorrowController;
@@ -119,6 +119,28 @@ Route::prefix('admin')->group(function () {
     Route::post('/users/{user}/toggle', [AdminUserController::class, 'toggleStatus'])->name('admin.usermanagement.toggle');
 });
 
+use App\Http\Controllers\AdminProfileController;
 
+Route::prefix('admin')->group(function () {
+    Route::get('/profile', [AdminProfileController::class, 'index'])->name('admin.profile.index');
+    Route::post('/profile', [AdminProfileController::class, 'update'])->name('admin.profile.update');
+});
+
+use App\Http\Controllers\UserProfileController;
+
+Route::prefix('client')->group(function () {
+    Route::get('/profile', [UserProfileController::class, 'show'])->name('client.profile.index');
+    Route::post('/profile', [UserProfileController::class, 'update'])->name('client.profile.update');
+});
+
+use App\Http\Controllers\AdminBorrowHistoryController;
+
+Route::prefix('admin')->group(function () {
+    Route::get('/borrow-history', [AdminBorrowHistoryController::class, 'index'])
+        ->name('admin.borrowhistorymanagement.index');
+
+    Route::post('/borrow-history/{borrow}/mark-returned', [AdminBorrowHistoryController::class, 'markReturned'])
+        ->name('admin.borrowhistorymanagement.markReturned');
+});
 
 ?>

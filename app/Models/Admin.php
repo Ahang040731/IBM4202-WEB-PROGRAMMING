@@ -9,7 +9,9 @@ class Admin extends Model
     protected $fillable = [
         'account_id',
         'username',
-        'phone'
+        'phone',
+        'address',
+        'photo',
     ];
 
     public function account()
