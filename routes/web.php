@@ -5,6 +5,7 @@ use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\FavouriteController;
 use App\Http\Controllers\BookController;
 use App\Http\Controllers\BorrowHistoryController;
+use App\Http\Controllers\FinesController;
 
 Route::get('/', function () {
     return view('client.homepage.index');
@@ -51,7 +52,8 @@ Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard
 Route::get('/books', [BookController::class, 'index'])->name('books.index');
 Route::get('/borrowed', [BookController::class, 'borrowed'])->name('borrowed.index');
 Route::get('/returned', [BookController::class, 'returned'])->name('returned.index');
-Route::get('/fines', [BookController::class, 'fines'])->name('fines.index');
+Route::get('/fines', [FinesController::class, 'index'])->name('fines.index');
+//Route::get('/fines', [BookController::class, 'fines'])->name('fines.index');
 Route::get('/favorites', [FavouriteController::class, 'index'])->name('favorites.index');
 Route::get('/profile', [DashboardController::class, 'showProfile'])->name('profile.show');
 Route::get('/profile/edit', [DashboardController::class, 'editProfile'])->name('profile.edit');
