@@ -6,7 +6,6 @@
 
 <div class="bh-container">
   <h1 class="bh-h1">Fines</h1>
-  <p>Display your fines and payment options.</p>
 
   {{-- Current Unpaid Fines --}}
   <section class="mb-10">
