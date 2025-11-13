@@ -47,8 +47,7 @@
         {{-- Sidebar --}}
         <div class="sidebar p-3">
             <h4 class="text-center mb-4">📘 Admin Panel</h4>
-
-            {{-- ✅ 用你的 route 名称 --}}
+            {{-- Navigation Links --}}
             <a href="{{ route('admin.homepage') }}" class="{{ request()->routeIs('admin.homepage') ? 'active' : '' }}">🏠 Dashboard</a>
             <a href="{{ route('admin.books.index') }}">📚 Manage Books</a>
             <a href="{{ route('admin.borrows.index') }}">🔄 Borrow Management</a>
@@ -56,9 +55,60 @@
             <a href="{{ route('admin.usermanagement.index') }}">👥 Manage Users</a>
             <a href="{{ route('admin.profile.index') }}">👤 Profile</a>
             <hr style="border-color: #475569;">
-            <a href="{{ route('logout') }}">🚪 Logout</a>
+            
+            {{-- Logout Form --}}
+            <form action="{{ route('logout') }}" method="POST" style="margin: 0;">
+                @csrf
+                <button type="submit" class="sidebar-logout-btn">
+                    🚪 Logout
+                </button>
+            </form>
         </div>
 
+    <style>
+    .sidebar-logout-btn {
+        background: none;
+        border: none;
+        color: inherit;
+        cursor: pointer;
+        padding: 0.75rem 1rem;
+        font-size: 1rem;
+        text-align: left;
+        width: 100%;
+        display: block;
+        text-decoration: none;
+        transition: all 0.3s ease;
+        border-radius: 0.5rem;
+    }
+
+    .sidebar-logout-btn:hover {
+        background-color: rgba(255, 255, 255, 0.1);
+        transform: translateX(5px);
+    }
+
+    /* Match your sidebar link styles */
+    .sidebar a,
+    .sidebar-logout-btn {
+        color: #e2e8f0;
+        display: block;
+        padding: 0.75rem 1rem;
+        margin-bottom: 0.5rem;
+        text-decoration: none;
+        border-radius: 0.5rem;
+        transition: all 0.3s ease;
+    }
+
+    .sidebar a:hover,
+    .sidebar-logout-btn:hover {
+        background-color: rgba(255, 255, 255, 0.1);
+        transform: translateX(5px);
+    }
+
+    .sidebar a.active {
+        background-color: rgba(255, 255, 255, 0.2);
+        font-weight: 600;
+    }
+    </style>
         {{-- Main Content --}}
         <div class="flex-grow-1">
             <nav class="navbar navbar-light px-4 d-flex justify-content-between align-items-center">
