@@ -156,6 +156,4 @@ Route::prefix('admin')->group(function () {
 Route::get('/admin/homepage', function() {
     return view('admin.homepage');
 })->name('admin.homepage');
-
-
 ?>
