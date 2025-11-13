@@ -74,9 +74,8 @@ class AuthController extends Controller
      */
     public function register(Request $request)
     {
-        // Validate the request
         $validator = Validator::make($request->all(), [
-            'email' => 'required|email|unique:accounts,email',
+            'email'    => 'required|email|unique:accounts,email',
             'password' => 'required|string|min:6|confirmed',
         ]);
 
@@ -86,14 +85,24 @@ class AuthController extends Controller
                 ->withInput($request->only('email'));
         }
 
-        // Create new user account (default role is 'user')
         $account = Account::create([
-            'email' => $request->email,
+            'email'    => $request->email,
             'password' => Hash::make($request->password),
-            'role' => 'user', // Default role
+            'role'     => 'user',
         ]);
 
-        // Redirect to login instead of homepage
+        // use part before @ as a simple default username
+        $defaultUsername = strstr($request->email, '@', true) ?: 'User'.$account->id;
+
+        $account->user()->create([
+            'username'  => $defaultUsername,
+            'phone'     => null,
+            'address'   => null,
+            'photo'     => null,
+            'credit'    => 0,
+            'is_active' => true,
+        ]);
+
         return redirect()->route('login')
             ->with('success', 'Registration successful! Please log in.');
     }

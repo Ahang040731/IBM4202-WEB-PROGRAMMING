@@ -11,6 +11,21 @@ class DashboardController extends Controller
 {
     public function index(Request $request)
     {
+
+        $account = auth()->user();
+
+        if (!$account) {
+            return redirect()->route('login')
+                ->with('error', 'Please log in first.');
+        }
+
+        $user = $account->ensureUserProfile();
+
+        if (!$user) {
+            // e.g. admin hitting user profile page, or something weird
+            abort(403, 'User profile not available for this account.');
+        }
+
         // Get search and filter parameters
         $search = $request->input('search');
         $category = $request->input('category');
