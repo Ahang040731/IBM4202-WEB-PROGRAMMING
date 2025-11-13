@@ -31,8 +31,15 @@ class FavoriteController extends Controller
      /** Toggle favorite / unfavorite */
     public function toggle(Book $book)
     {
-        $userId = 1;
-        // $userId = auth()->id() ?? 1;
+        $account = auth()->user();             // Account model
+        $user = $account->user;         // related User profile
+
+        if (!$user) {
+            // optional: handle case where account has no user profile
+            abort(403, 'No user profile linked to this account.');
+        }
+
+        $userId = $user->id;            // this matches borrow_histories.user_id
 
         $exists = Favourite::where('user_id', $userId)
             ->where('book_id', $book->id)

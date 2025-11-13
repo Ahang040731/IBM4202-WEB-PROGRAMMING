@@ -70,4 +70,34 @@ class Account extends Authenticatable
     {
         return $this->role === 'user';
     }
+
+
+    /**
+     * Ensure this account has a User profile.
+     * - If exists, return it.
+     * - If missing and role == 'user', auto-create a default profile.
+     * - If role is not 'user', return null (let caller handle).
+     */
+    public function ensureUserProfile(): ?User
+    {
+        if ($this->role !== 'user') {
+            return null; // probably an admin
+        }
+
+        if ($this->user) {
+            return $this->user;
+        }
+
+        // Auto-create a minimal profile to avoid null errors
+        $defaultUsername = strstr($this->email, '@', true) ?: 'User'.$this->id;
+
+        return $this->user()->create([
+            'username'  => $defaultUsername,
+            'phone'     => null,
+            'address'   => null,
+            'photo'     => null,
+            'credit'    => 0,
+            'is_active' => true,
+        ]);
+    }
 }

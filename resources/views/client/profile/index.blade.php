@@ -11,6 +11,11 @@
             <div class="alert alert-success text-center">{{ session('success') }}</div>
         @endif
 
+        @php
+            $account = auth()->user();
+            $user = $account?->user;
+        @endphp
+
         <form action="{{ route('client.profile.update') }}" method="POST" enctype="multipart/form-data">
             @csrf
             @if($user->photo)
