@@ -369,12 +369,36 @@
         <!-- User Menu -->
         <div class="user-menu" x-data="{ open: false }" @click.away="open = false">
           <div class="user-avatar" @click="open = !open">
-            @auth
-              {{ strtoupper(substr(auth()->user()->username ?? 'G', 0, 1)) }}
+            @php
+                $account = auth()->user();
+                $profile = null;
+                $photoPath = null;
+
+                if ($account) {
+                    // if you have isAdmin() / isUser() helper on Account:
+                    if (method_exists($account, 'isAdmin') && $account->isAdmin()) {
+                        $profile = $account->admin;
+                    } else {
+                        $profile = $account->user;
+                    }
+
+                    $photoPath = $profile?->photo;
+                }
+            @endphp
+
+            @if($account && $photoPath)
+                {{-- Logged in & has custom photo --}}
+                <img src="{{ asset('storage/' . $photoPath) }}"
+                    class="avatar-img rounded-full object-cover" alt="Profile">
+            @elseif($account)
+                {{-- Logged in but no custom photo --}}
+                <img src="{{ asset('images/default_profile.png') }}"
+                    class="avatar-img rounded-full object-cover" alt="Default Profile">
             @else
-              G
-            @endauth
-          </div>
+                {{-- Guest --}}
+                <span class="avatar-initial rounded-full">G</span>
+            @endif
+        </div>
 
           <!-- Dropdown -->
           <div class="dropdown-menu" x-show="open" x-cloak>
@@ -385,11 +409,11 @@
                         d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>
                 </svg>
                 <div>
-                  <div class="font-semibold text-gray-900">{{ auth()->user()->username ?? 'User' }}</div>
+                  <div class="font-semibold text-gray-900">{{ $profile->username ?? 'Guest'}}</div>
                   <div class="text-xs text-gray-500">{{ auth()->user()->email ?? '' }}</div>
                 </div>
               </div>
-              <a href="{{ route('profile.edit') ?? '#' }}" class="dropdown-item">
+              <a href="{{ route('client.profile.index') ?? '#' }}" class="dropdown-item">
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
                         d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/>

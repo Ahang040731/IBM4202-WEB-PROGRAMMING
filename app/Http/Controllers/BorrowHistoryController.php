@@ -9,8 +9,15 @@ class BorrowHistoryController extends Controller
 {
     public function index()
     {
-        // $userId = auth()->id() ?? 1; // TODO: restore auth()->id()
-        $userId = 1; // TODO: restore auth()->id()
+        $account = auth()->user();             // Account model
+        $user = $account->user;         // related User profile
+
+        if (!$user) {
+            // optional: handle case where account has no user profile
+            abort(403, 'No user profile linked to this account.');
+        }
+
+        $userId = $user->id;            // this matches borrow_histories.user_id
 
         $current = BorrowHistory::with(['book','copy'])
             ->where('user_id', $userId)

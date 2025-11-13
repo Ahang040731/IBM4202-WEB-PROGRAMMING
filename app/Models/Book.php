@@ -87,4 +87,21 @@ class Book extends Model
         return $this->belongsToMany(User::class, 'favourites', 'book_id', 'user_id');
     }
 
+    public function getIsFavoritedAttribute(): bool
+    {
+        if (!auth()->check()) {
+            return false;
+        }
+
+        // Get the logged-in user's profile (from Users table)
+        $userProfile = auth()->user()->user; // Account -> user() relationship
+
+        if (!$userProfile) {
+            return false;
+        }
+
+        return $this->favourites()
+            ->where('user_id', $userProfile->id)   // 👈 use profile id
+            ->exists();
+    }
 }

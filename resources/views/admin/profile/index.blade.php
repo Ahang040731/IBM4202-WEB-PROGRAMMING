@@ -7,6 +7,12 @@
     <div class="card shadow-lg rounded-4 p-5" style="max-width: 600px; width: 100%;">
         <h3 class="text-center mb-4 text-primary">👤 Admin Profile</h3>
 
+        @if($admin->photo)
+            <div class="text-center mt-3">
+                <img src="{{ $admin->photo ? asset('storage/'.$admin->photo) : asset('images/default_profile.png') }}" class="rounded shadow" width="100" height="100" style="object-fit:cover;">
+            </div>
+        @endif
+
         @if(session('success'))
             <div class="alert alert-success text-center">{{ session('success') }}</div>
         @endif
@@ -36,11 +42,6 @@
             <div class="mb-3">
                 <label class="form-label fw-semibold">Photo</label>
                 <input type="file" name="photo" class="form-control">
-                @if($admin->photo)
-                    <div class="text-center mt-3">
-                        <img src="{{ asset('storage/'.$admin->photo) }}" class="rounded shadow" width="100" height="100" style="object-fit:cover;">
-                    </div>
-                @endif
             </div>
 
             <!-- Buttons -->

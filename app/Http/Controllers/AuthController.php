@@ -128,6 +128,6 @@ class AuthController extends Controller
         }
         
         // Default to client homepage
-        return redirect()->route('homepage');
+        return redirect()->route('client.homepage.index');
     }
 }

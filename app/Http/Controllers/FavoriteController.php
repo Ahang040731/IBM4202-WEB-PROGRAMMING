@@ -11,8 +11,15 @@ class FavoriteController extends Controller
 {
     public function index()
     {
-        $userId = 1;
-        // $userId = auth()->id() ?? 1; // temp for demo
+        $account = auth()->user();             // Account model
+        $user = $account->user;         // related User profile
+
+        if (!$user) {
+            // optional: handle case where account has no user profile
+            abort(403, 'No user profile linked to this account.');
+        }
+
+        $userId = $user->id;            // this matches borrow_histories.user_id
         $books = Book::with([]) // eager load if needed
             ->whereHas('favouritedByUsers', fn ($q) => $q->where('user_id', $userId))
             ->orderBy('book_name')

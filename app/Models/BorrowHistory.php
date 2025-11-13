@@ -36,6 +36,11 @@ class BorrowHistory extends Model
     public function user(): BelongsTo { return $this->belongsTo(User::class); }
     public function book(): BelongsTo { return $this->belongsTo(Book::class); }
     public function copy(): BelongsTo { return $this->belongsTo(BookCopy::class,'copy_id'); }
+    public function fine()
+{
+    return $this->hasOne(Fine::class, 'borrow_history_id');
+}
+
 
     /* ==========================
        Scopes

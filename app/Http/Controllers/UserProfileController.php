@@ -11,17 +11,17 @@ class UserProfileController extends Controller
     // show profile
     public function show()
     {
-        
-        $user = User::findOrFail(1);
+        $account = auth()->user(); 
+        $user = $account->user;
         return view('client.profile.index', compact('user'));
     }
 
     //update profile
     public function update(Request $request)
     {
-        $user = User::findOrFail(1); 
+        $account = auth()->user(); 
+        $user = $account->user;
 
-        
         $validated = $request->validate([
             'username' => 'required|string|max:255',
             'phone'    => 'nullable|string|max:20',

@@ -17,11 +17,14 @@
           {{-- Unfavorite (star) --}}
           <form method="POST" action="{{ route('favorites.toggle', $book->id) }}" class="absolute top-2 right-2 z-10">
             @csrf
-            <button type="submit" class="inline-flex items-center justify-center w-9 h-9 rounded-full bg-white/90 hover:bg-white shadow ring-1 ring-black/5 transition" title="Remove from favorites" aria-label="Remove from favorites">
-              {{-- Filled star icon --}}
-              <svg class="w-5 h-5 text-rose-500" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
-                <path d="M12 17.27 18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/>
-              </svg>
+            <button type="submit" class="favorite-btn {{ $book->is_favorited ? 'active' : '' }}">
+                <svg fill="{{ $book->is_favorited ? 'currentColor' : 'none' }}"
+                    stroke="currentColor"
+                    class="w-5 h-5"
+                    viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                          d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/>
+                </svg>
             </button>
           </form>
 
@@ -66,3 +69,45 @@
   @endif
 </div>
 @endsection
+
+<style>
+  .favorite-form {
+    position: absolute;
+    top: 12px;
+    left: 12px;
+}
+
+.favorite-btn {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: white;
+    border: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.favorite-btn svg {
+    width: 20px;
+    height: 20px;
+    color: #ef4444; /* red */
+}
+
+.favorite-btn:hover {
+    transform: scale(1.1);
+}
+
+/* Active state (favorited) */
+.favorite-btn.active {
+    background: white; /* red circle */
+}
+
+.favorite-btn.active svg {
+    color: #ef4444; /* white heart (or change to red if you want) */
+}
+
+</style>

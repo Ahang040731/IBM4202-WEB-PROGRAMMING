@@ -77,7 +77,7 @@ class DashboardController extends Controller
             $favoritesCount = Favourite::where('user_id', auth()->id())->count();
         }
 
-        return view('dashboard', compact(
+        return view('client.homepage.index', compact(
             'books',
             'totalBooks',
             'borrowedCount',

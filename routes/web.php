@@ -42,7 +42,7 @@ Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
 Route::get('/', function () {
     if (auth()->check()) {
-        return redirect()->route('dashboard');
+        return redirect()->route('client.homepage.index');
     }
     return redirect()->route('login');
 });
@@ -57,26 +57,23 @@ Route::get('/', function () {
 Route::middleware(['auth'])->group(function () {
     
     // Dashboard
-    Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
-    Route::get('/client/homepage/index', [DashboardController::class, 'index'])->name('client.homepage.index');
+    Route::get('/homepage', [DashboardController::class, 'index'])->name('client.homepage.index');
     
     // Books
     Route::get('/books', [BookController::class, 'index'])->name('books.index');
     Route::get('/books/{book}', [BookController::class, 'show'])->name('books.show');
     
     // Borrow History
-    Route::prefix('client')->group(function () {
-        Route::get('/borrowhistory', [BorrowHistoryController::class, 'index'])
-            ->name('client.borrowhistory.index');
-        Route::post('/borrowhistory/{borrow}/extend', [BorrowHistoryController::class, 'extend'])
-            ->name('client.borrowhistory.extend');
-        Route::post('/borrowhistory/{borrow}/cancel', [BorrowHistoryController::class, 'cancel'])
-            ->name('client.borrowhistory.cancel');
-    });
+    Route::get('/borrowhistory', [BorrowHistoryController::class, 'index'])
+        ->name('client.borrowhistory.index');
+    Route::post('/borrowhistory/{borrow}/extend', [BorrowHistoryController::class, 'extend'])
+        ->name('client.borrowhistory.extend');
+    Route::post('/borrowhistory/{borrow}/cancel', [BorrowHistoryController::class, 'cancel'])
+        ->name('client.borrowhistory.cancel');
     
     // Borrowed/Returned Books
-    Route::get('/borrowed', [BookController::class, 'borrowed'])->name('borrowed.index');
-    Route::get('/returned', [BookController::class, 'returned'])->name('returned.index');
+    // Route::get('/borrowed', [BookController::class, 'borrowed'])->name('borrowed.index');
+    // Route::get('/returned', [BookController::class, 'returned'])->name('returned.index');
     
     // Fines
     Route::get('/fines', [FinesController::class, 'index'])->name('fines.index');
@@ -84,21 +81,14 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/fines/{fine}/pay', [FinesController::class, 'pay'])->name('fines.pay');
     
     // Favorites
-    Route::prefix('client')->group(function () {
-        Route::get('/favorites', [FavoriteController::class, 'index'])
-            ->name('client.favorites.index');
-        Route::post('/favorites/{book}/toggle', [FavoriteController::class, 'toggle'])
-            ->name('favorites.toggle');
-    });
-    Route::get('/favorites', [FavouriteController::class, 'index'])->name('favorites.index');
+    Route::get('/favorites', [FavoriteController::class, 'index'])
+        ->name('client.favorites.index');
+    Route::post('/favorites/{book}/toggle', [FavoriteController::class, 'toggle'])
+        ->name('favorites.toggle');
     
     // Profile
-    Route::get('/profile/edit', [DashboardController::class, 'editProfile'])->name('profile.edit');
-    Route::prefix('client')->group(function () {
-        Route::get('/profile', [UserProfileController::class, 'show'])->name('client.profile.index');
-        Route::post('/profile', [UserProfileController::class, 'update'])->name('client.profile.update');
-    });
-    Route::get('/client/profile', [ProfileController::class, 'index'])->name('client.profile.index');
+    Route::get('/profile', [UserProfileController::class, 'show'])->name('client.profile.index');
+    Route::post('/profile', [UserProfileController::class, 'update'])->name('client.profile.update');
 });
 
 /*
@@ -146,7 +136,7 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->group(function () {
         ->name('admin.borrowhistorymanagement.markReturned');
     
     // Fines Management
-    Route::get('/fines', [AdminFinesController::class, 'index'])->name('admin.fines.index');
+    Route::get('/finesmanagement', [AdminFinesController::class, 'index'])->name('admin.fines.index');
     
     // Admin Profile
     Route::get('/profile', [AdminProfileController::class, 'index'])->name('admin.profile.index');

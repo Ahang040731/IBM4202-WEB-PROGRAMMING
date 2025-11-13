@@ -18,7 +18,7 @@ class IsAdmin
         // Check if user is authenticated and is an admin
         if (!auth()->check() || !auth()->user()->isAdmin()) {
             // Redirect non-admin users to homepage with error message
-            return redirect()->route('homepage')
+            return redirect()->route('client.homepage.index')
                 ->with('error', 'You do not have permission to access this area.');
         }
 

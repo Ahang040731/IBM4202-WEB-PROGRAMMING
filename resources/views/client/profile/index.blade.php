@@ -13,6 +13,9 @@
 
         <form action="{{ route('client.profile.update') }}" method="POST" enctype="multipart/form-data">
             @csrf
+            @if($user->photo)
+                <img src="{{ $user->photo ? asset('storage/'.$user->photo) : asset('images/default_profile.png')}}" class="profile-photo">
+            @endif
 
             <!-- Username -->
             <div class="form-row">
@@ -40,9 +43,6 @@
                     <span class="file-name">No file chosen</span>
                     <input type="file" name="photo" class="real-file-input">
                 </div>
-                @if($user->photo)
-                    <img src="{{ asset('storage/'.$user->photo) }}" class="profile-photo">
-                @endif
             </div>
 
             <!-- Button -->
