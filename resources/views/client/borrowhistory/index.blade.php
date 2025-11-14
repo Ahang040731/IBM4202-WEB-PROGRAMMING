@@ -17,14 +17,12 @@
           @php
             $book = $row->book ?? null;
             $copy = $row->copy ?? null;
-            $isOverdue = is_null($row->returned_at) && \Illuminate\Support\Carbon::parse($row->due_at)->lt(now());
-            $isPending = ($row->approve_status === 'pending');
 
+            $isPending = $row->approve_status === 'pending';
             $badgeClass = $isPending
-              ? 'bh-badge bh-badge--pending'
-              : ($isOverdue ? 'bh-badge bh-badge--overdue' : 'bh-badge bh-badge--active');
-
-            $badgeText = $isPending ? 'Pending' : ($isOverdue ? 'Overdue' : 'Active');
+                ? 'bh-badge bh-badge--pending'
+                : ($row->is_overdue ? 'bh-badge bh-badge--overdue' : 'bh-badge bh-badge--active');
+            $badgeText = $isPending ? 'Pending' : ($row->is_overdue ? 'Overdue' : 'Returned');
           @endphp
 
           <li class="bh-card">
@@ -99,12 +97,14 @@
       <ul class="bh-list mb-4">
         @foreach($previous as $row)
           @php
-          $isPending = $row->approve_status === 'pending';
-          $badgeClass = $isPending
-              ? 'bh-badge bh-badge--pending'
-              : ($row->is_overdue ? 'bh-badge bh-badge--overdue' : 'bh-badge bh-badge--active');
-          $badgeText = $isPending ? 'Pending' : ($row->is_overdue ? 'Overdue' : 'Active');
-        @endphp
+            $book = $row->book ?? null;
+            $copy = $row->copy ?? null;
+            $isPending = $row->approve_status === 'pending';
+            $badgeClass = $isPending
+                ? 'bh-badge bh-badge--pending'
+                : ($row->is_overdue ? 'bh-badge bh-badge--overdue' : 'bh-badge bh-badge--active');
+            $badgeText = $isPending ? 'Pending' : ($row->is_overdue ? 'Overdue' : 'Active');
+          @endphp
 
           <li class="bh-card">
             <div class="bh-row">

@@ -234,16 +234,18 @@
 
     $fineBorrows = $borrows->map(function ($b) {
         return [
-            'id'   => $b->id,
-            'book' => $b->book->book_name ?? 'Unknown Book',
-            'user' => $b->user->username ?? 'User',
+            'id'      => $b->id,
+            'user_id' => $b->user_id,
+            'book'    => $b->book->book_name ?? 'Unknown Book',
+            'barcode' => $b->copy->barcode ?? 'No Barcode',
+            'user'    => $b->user->username ?? 'User',
         ];
     });
 @endphp
 
 @push('scripts')
     <script>
-    const fineUsers   = @json($fineUsers);
+    const fineUsers = @json($fineUsers);
     const fineBorrows = @json($fineBorrows);
     document.addEventListener('DOMContentLoaded', () => {
         // Approve button
@@ -396,10 +398,10 @@
                         <div class="fine-form-group">
                             <label class="fine-label">Reason</label>
                             <select id="swal-fine-reason" class="fine-select">
+                                <option value="manual">Other / Manual</option>
                                 <option value="lost">Lost Book</option>
                                 <option value="damage">Damaged Book</option>
                                 <option value="late">Late Return (Manual)</option>
-                                <option value="manual">Other / Manual</option>
                                 <option value="activate">Account Activation / Other</option>
                             </select>
                         </div>
@@ -428,7 +430,7 @@
                         fineUsers.forEach(u => {
                             const opt = document.createElement('option');
                             opt.value = u.id;
-                            opt.textContent = `${u.username} (ID: ${u.id})`;
+                            opt.textContent = `${u.username}`;
                             userSelect.appendChild(opt);
                         });
 
@@ -445,7 +447,7 @@
                             userBorrows.forEach(b => {
                                 const opt = document.createElement('option');
                                 opt.value = b.id;
-                                opt.textContent = `#${b.id} — ${b.book || 'Unknown Book'}`;
+                                opt.textContent = `<${b.barcode}> ${b.book || 'Unknown Book'}`;
                                 borrowSelect.appendChild(opt);
                             });
                         });
@@ -464,6 +466,10 @@
                         if (!amountValue || parseFloat(amountValue) <= 0) {
                             Swal.showValidationMessage('Please enter a valid amount (RM).');
                             return false;
+                        }
+
+                        if (!reason) {
+                            reason = 'other';
                         }
 
                         return {

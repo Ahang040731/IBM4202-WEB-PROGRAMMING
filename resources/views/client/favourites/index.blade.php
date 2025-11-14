@@ -80,7 +80,7 @@
               </p>
             @endif
 
-            <a href="{{ route('books.show', $book->id) }}" class="view-details-btn view-details-btn-sm">
+            <a href="{{ route('client.books.show', $book->id) }}" class="view-details-btn view-details-btn-sm">
               <span>View Details</span>
               <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
