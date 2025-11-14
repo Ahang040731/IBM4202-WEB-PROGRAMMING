@@ -10,6 +10,37 @@
   
   <style>
     /* ==================== CUSTOM SCROLLBAR ==================== */
+          html, body {
+        margin: 0;
+        padding: 0;
+        height: 100%;
+        overflow: hidden; /* Prevent body scroll since main-content handles it */
+      }
+      header {
+  position: sticky;
+  top: 0;
+  z-index: 50;
+}
+
+/* On desktop, shift header content to align with main content */
+@media (min-width: 768px) {
+  header .max-w-screen-2xl {
+    margin-left: 0;
+    margin-right: auto;
+    padding-left: calc(256px + 1.5rem); /* 256px (w-64) + original padding */
+  }
+}
+      /* Add this new rule */
+      .flex.h-screen {
+        height: 100vh;
+        overflow: hidden;
+      }
+
+      /* Ensure main content scrolls consistently */
+      main.main-content {
+        overflow-y: scroll !important; /* Force scrollbar to always show */
+      }
+
     ::-webkit-scrollbar {
       width: 10px;
       height: 10px;
@@ -527,7 +558,8 @@
     .main-content {
       padding: 0;
       background: linear-gradient(135deg, rgba(102, 126, 234, 0.95) 0%, rgba(118, 75, 162, 0.95) 100%);
-      min-height: calc(100vh - 64px);
+      min-height: auto; 
+      height: auto;  
       animation: contentFadeIn 0.6s ease-out;
     }
 
@@ -610,8 +642,8 @@
 
     .logo-icon {
       animation: logo-bounce 2s ease-in-out infinite;
-      width: 32px;
-      height: 32px;
+      width: 96px;
+      height: 96px;
       filter: drop-shadow(0 2px 6px rgba(0, 0, 0, 0.2));
     }
 
@@ -982,7 +1014,7 @@
 </head>
 <body class="bg-gray-50 text-gray-900 antialiased" 
       x-data="{ 
-        sidebarOpen: false, 
+        sidebarOpen: false,
         userMenuOpen: false,
         notifOpen: false,
         mobileNotifOpen: false,
@@ -1012,15 +1044,16 @@
           </svg>
         </button>
         
-        <!-- Logo -->
-        <a href="{{ url('/') }}" class="logo">
-          <svg class="logo-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
-          </svg>
-          <span class="hidden sm:inline animate-text-glow">Library System</span>
-        </a>
+      <!-- Logo -->
+          <a href="{{ url('/') }}" class="logo">
+      <img src="{{ asset('images/Books(2).gif') }}"
+          alt="Group 888 Library Management System Logo"
+          class="logo-icon" />
+      <span class="hidden sm:inline animate-text-glow">
+        Group 888 Library Management System
+      </span>
+    </a>
       </div>
-
       <!-- Right Section -->
       <div class="flex items-center gap-3 animate-fade-in-right">
         <!-- Notifications (Mobile) -->
@@ -1381,7 +1414,7 @@
   </header>
 
   <!-- Main Layout -->
-  <div class="flex h-screen overflow-hidden">
+  <div class="flex h-screen">
     
     <!-- Desktop Sidebar -->
     <aside class="hidden md:flex md:flex-col w-64 sidebar">
