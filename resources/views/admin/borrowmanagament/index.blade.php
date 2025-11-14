@@ -91,13 +91,14 @@
                             <td>
                                 <div class="d-flex justify-content-center gap-2 flex-wrap">
 
-                                    @if($borrow->status == 'pending')
+                                    {{-- 1 Waiting for admin decision --}}
+                                    @if($borrow->approve_status === 'pending')
 
                                         <form action="{{ route('admin.borrows.approve', $borrow->id) }}"
                                             method="POST" class="m-0">
                                             @csrf
                                             <button class="btn px-3 py-1"
-                                                style="background-color:#51CF66; color:white; border-radius:6px;">
+                                                    style="background-color:#51CF66; color:white; border-radius:6px;">
                                                 Approve
                                             </button>
                                         </form>
@@ -106,28 +107,31 @@
                                             method="POST" class="m-0">
                                             @csrf
                                             <button class="btn px-3 py-1"
-                                                style="background-color:#FF6B6B; color:white; border-radius:6px;">
+                                                    style="background-color:#FF6B6B; color:white; border-radius:6px;">
                                                 Reject
                                             </button>
                                         </form>
 
-                                    @elseif($borrow->status == 'active' || $borrow->status == 'overdue')
+                                    {{-- 2 Approved + currently borrowed --}}
+                                    @elseif(in_array($borrow->status, ['active', 'overdue']))
 
                                         <form action="{{ route('admin.borrows.markReturned', $borrow->id) }}"
                                             method="POST" class="m-0">
                                             @csrf
                                             <button class="btn px-3 py-1"
-                                                style="background-color:#228BE6; color:white; border-radius:6px;">
+                                                    style="background-color:#228BE6; color:white; border-radius:6px;">
                                                 Mark Returned
                                             </button>
                                         </form>
 
+                                    {{-- 3 Everything else --}}
                                     @else
                                         <span class="text-muted">No actions</span>
                                     @endif
 
                                 </div>
                             </td>
+
 
                         </tr>
                         @empty
