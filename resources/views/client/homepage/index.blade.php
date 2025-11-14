@@ -195,7 +195,7 @@
             <div class="book-card glass-effect animate-book-reveal" style="--delay: {{ ($index % 12) * 0.05 }}s">
                 <div class="book-image-container">
                     @if($book->photo)
-                        <img src="{{ $book->photo }}" alt="{{ $book->book_name }}" class="book-image" loading="lazy">
+                        <img rel="preload" src="{{ $book->photo }}" alt="{{ $book->book_name }}" class="book-image" loading="lazy">
                     @else
                         <div class="book-placeholder">
                             <div class="placeholder-content">
