@@ -851,75 +851,53 @@
 @push('scripts')
 <script>
 document.addEventListener('DOMContentLoaded', () => {
-    document.querySelectorAll('.pay-btn').forEach(button => {
-        button.addEventListener('click', e => {
-            const form   = e.target.closest('.pay-form');
-            const amount = e.target.dataset.amount || '0.00';
+  document.querySelectorAll('.pay-btn').forEach(button => {
+    button.addEventListener('click', e => {
+      const form   = e.target.closest('.pay-form');
+      const amount = e.target.dataset.amount || '0.00';
 
-            // Check if SweetAlert is available
-            if (typeof Swal === 'undefined') {
-                if (confirm(`Pay RM ${amount}? Please select a payment method.`)) {
-                    form.submit();
-                }
-                return;
-            }
-
-            Swal.fire({
-                title: 'Confirm Fine Payment',
-                html: `
-                    <div style="font-size:0.95rem; color:#4b5563;">
-                        <div style="margin-bottom:6px;">You are about to pay:</div>
-                        <div style="
-                            display:inline-block;
-                            padding:6px 14px;
-                            border-radius:999px;
-                            background:linear-gradient(90deg,#10b981,#059669);
-                            color:#fff;
-                            font-size:1.4rem;
-                            font-weight:700;
-                            letter-spacing:0.02em;
-                            margin-bottom:8px;
-                        ">
-                            RM ${amount}
-                        </div>
-                    </div>
-                `,
-                icon: 'info',
-                input: 'select',
-                inputOptions: {
-                    credit:          'Credit Balance',
-                    tng:             "Touch 'n Go",
-                    card:            'Debit / Credit Card',
-                    online_banking:  'Online Banking',
-                    cash:            'Cash at Counter'
-                },
-                inputValue: 'credit',
-                inputLabel: 'Payment Method',
-                showCancelButton: true,
-                confirmButtonColor: '#10b981',
-                cancelButtonColor: '#6B7280',
-                confirmButtonText: 'Confirm Payment',
-                cancelButtonText: 'Cancel',
-                inputValidator: (value) => {
-                    if (!value) {
-                        return 'Please select a payment method.';
-                    }
-                }
-            }).then(result => {
-                if (result.isConfirmed) {
-                    let methodInput = form.querySelector('input[name="method"]');
-                    if (!methodInput) {
-                        methodInput = document.createElement('input');
-                        methodInput.type = 'hidden';
-                        methodInput.name = 'method';
-                        form.appendChild(methodInput);
-                    }
-                    methodInput.value = result.value;
-                    form.submit();
-                }
-            });
-        });
+      Swal.fire({
+        title: 'Pay Fine with Credit?',
+        html: `
+          <div style="font-size:0.95rem; color:#4b5563;">
+            <div style="margin-bottom:6px;">This will be deducted from your credit balance:</div>
+            <div style="
+              display:inline-block;
+              padding:6px 14px;
+              border-radius:999px;
+              background:linear-gradient(90deg,#4F46E5,#8B5CF6);
+              color:#fff;
+              font-size:1.4rem;
+              font-weight:700;
+              letter-spacing:0.02em;
+              margin-bottom:8px;
+            ">
+              RM ${amount}
+            </div>
+          </div>
+        `,
+        icon: 'info',
+        showCancelButton: true,
+        confirmButtonColor: '#667eea',
+        cancelButtonColor: '#6B7280',
+        confirmButtonText: 'Confirm Payment',
+        cancelButtonText: 'Cancel',
+      }).then(result => {
+        if (result.isConfirmed) {
+          let methodInput = form.querySelector('input[name="method"]');
+          if (!methodInput) {
+            methodInput = document.createElement('input');
+            methodInput.type = 'hidden';
+            methodInput.name = 'method';
+            form.appendChild(methodInput);
+          }
+          methodInput.value = 'credit';
+          form.submit();
+        }
+      });
     });
+  });
 });
+
 </script>
 @endpush

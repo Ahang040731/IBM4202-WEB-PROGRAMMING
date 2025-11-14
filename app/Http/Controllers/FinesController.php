@@ -6,6 +6,8 @@ use App\Models\Fine;
 use App\Models\BorrowHistory;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use App\Models\CreditTransaction;
+use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
 
 class FinesController extends Controller
@@ -124,6 +126,7 @@ class FinesController extends Controller
 
         $borrowing = $fine->borrowHistory;
 
+        // Still block if book not returned and not marked as lost
         if (
             $borrowing &&
             $borrowing->returned_at === null &&
@@ -132,18 +135,43 @@ class FinesController extends Controller
             return back()->with('error', 'You must return the book before paying the fine.');
         }
 
+        //  Only UNPAID fines can be paid
         if ($fine->status !== 'unpaid') {
-            return back()->with('error', 'This fine is already being processed or completed.');
+            return back()->with('error', 'This fine is already processed or completed.');
         }
 
-        $method = $request->input('method', 'cash');
+        // 🔹 Force credit payment
+        $amount = $fine->amount;
 
-        $fine->update([
-            'status'          => 'pending',
-            'method'          => $method,
-            'transaction_ref' => 'REQ-' . $fine->id . '-' . time(),
-        ]);
+        // Check credit balance
+        if ($user->credit < $amount) {
+            return back()->with('error', 'Not enough credit to pay this fine.');
+        }
 
-        return back()->with('success', 'Your payment request has been sent to admin for approval.');
+        DB::transaction(function () use ($user, $fine, $amount) {
+
+            // 1) Deduct from user credit
+            $user->decrement('credit', $amount);
+
+            // 2) Log credit transaction
+            CreditTransaction::create([
+                'user_id'   => $user->id,
+                'delta'     => -$amount, // negative = deduction
+                'reason'    => $fine->reason === 'lost' ? 'lost' : 'fine',
+                'method'    => 'credit',
+                'reference' => 'FINE-' . $fine->id . '-' . time(),
+            ]);
+
+            // 3) Mark fine as PAID immediately
+            $fine->update([
+                'status'          => 'paid',
+                'method'          => 'credit',
+                'transaction_ref' => 'FINE-' . $fine->id . '-' . time(),
+                'paid_at'         => now(),
+            ]);
+        });
+
+        return back()->with('success', 'Fine has been paid using your credit balance.');
     }
+
 }
