@@ -45,6 +45,11 @@ class AuthController extends Controller
             ])->onlyInput('email');
         }
 
+        // Check if account has an associated user and if that user is active
+        if ($account->user && !$account->user->is_active) {
+            return back()->with('error', 'Your account has been deactivated. Please contact support.')->withInput($request->only('email'));
+        }
+
         // Log the user in
         Auth::login($account, $request->boolean('remember'));
 
